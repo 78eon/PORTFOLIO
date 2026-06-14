@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
-import Link from 'next/link'
 import WriteupCard from '@/components/WriteupCard'
 import db from '@/lib/db'
 
 const CATEGORIES = ['All', 'Web', 'Network', 'Malware', 'Forensics', 'CTF', 'Other']
 
+// Replace the empty strings below with your actual profile usernames/URLs
 const SOCIAL_LINKS = [
-  { label: 'GitHub', href: 'https://github.com/' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/' },
-  { label: 'TryHackMe', href: 'https://tryhackme.com/p/' },
-  { label: 'HackTheBox', href: 'https://app.hackthebox.com/profile/' },
-]
+  { label: 'GitHub', href: 'https://github.com/78eon' },
+  { label: 'LinkedIn', href: '' },
+  { label: 'TryHackMe', href: '' },
+  { label: 'HackTheBox', href: '' },
+].filter(l => {
+  try { return new URL(l.href).pathname.length > 1 } catch { return false }
+})
 
 const TYPING_LINES = [
   '> whoami',
@@ -176,11 +178,8 @@ export default function Home({ writeups }) {
       <div className="min-h-screen bg-[#0a0a0a] text-white">
         {/* Header */}
         <header className="border-b border-[#1a1a1a] px-6 py-4">
-          <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="max-w-6xl mx-auto">
             <span className="font-mono text-[#00ff41] text-sm tracking-wider">~/security-research</span>
-            <Link href="/admin" className="text-[#444] text-xs font-mono hover:text-[#00ff41] transition-colors">
-              [admin]
-            </Link>
           </div>
         </header>
 
