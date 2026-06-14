@@ -2,6 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
 
+  async rewrites() {
+    const adminPath = process.env.NEXT_PUBLIC_ADMIN_PATH || 'admin'
+    return [
+      { source: `/${adminPath}`, destination: '/admin' },
+      { source: `/${adminPath}/:path*`, destination: '/admin/:path*' },
+    ]
+  },
+
   async headers() {
     return [
       {

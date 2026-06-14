@@ -2,14 +2,13 @@ import Head from 'next/head'
 import Link from 'next/link'
 import db from '@/lib/db'
 import { checkAuth } from '@/lib/authGuard'
+import { ADMIN } from '@/lib/adminPath'
 
 export async function getServerSideProps({ req }) {
   if (!checkAuth(req)) {
-    return { redirect: { destination: '/login?from=/admin/messages', permanent: false } }
+    return { redirect: { destination: `/login?from=/${ADMIN}/messages`, permanent: false } }
   }
-  const { rows } = await db.query(
-    'SELECT * FROM contacts ORDER BY created_at DESC'
-  )
+  const { rows } = await db.query('SELECT * FROM contacts ORDER BY created_at DESC')
   return {
     props: {
       messages: rows.map(r => ({
@@ -28,7 +27,7 @@ export default function Messages({ messages }) {
       <Head><title>Messages — Admin</title></Head>
       <div className="min-h-screen bg-[#0a0a0a] text-white">
         <header className="border-b border-[#222] px-6 py-4">
-          <Link href="/admin" className="text-[#00ff41] font-mono text-sm hover:underline">
+          <Link href={`/${ADMIN}`} className="text-[#00ff41] font-mono text-sm hover:underline">
             ← Back to Dashboard
           </Link>
           <div className="flex items-center gap-3 mt-1">
@@ -56,17 +55,12 @@ export default function Messages({ messages }) {
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <span className="text-white font-semibold text-sm">{msg.name}</span>
-                      <a
-                        href={`mailto:${msg.email}`}
-                        className="text-[#00ff41] text-xs font-mono ml-2 hover:underline"
-                      >
+                      <a href={`mailto:${msg.email}`} className="text-[#00ff41] text-xs font-mono ml-2 hover:underline">
                         {msg.email}
                       </a>
                     </div>
                     <div className="flex items-center gap-3">
-                      {!msg.read && (
-                        <span className="text-[#00ff41] text-xs font-mono">● new</span>
-                      )}
+                      {!msg.read && <span className="text-[#00ff41] text-xs font-mono">● new</span>}
                       <time className="text-[#555] text-xs font-mono">
                         {new Date(msg.created_at).toLocaleString()}
                       </time>
@@ -74,10 +68,7 @@ export default function Messages({ messages }) {
                   </div>
                   <p className="text-[#bbb] text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>
                   <div className="mt-3 flex gap-3">
-                    <a
-                      href={`mailto:${msg.email}?subject=Re: your message`}
-                      className="text-[#00ff41] text-xs font-mono hover:underline"
-                    >
+                    <a href={`mailto:${msg.email}?subject=Re: your message`} className="text-[#00ff41] text-xs font-mono hover:underline">
                       Reply via email →
                     </a>
                   </div>

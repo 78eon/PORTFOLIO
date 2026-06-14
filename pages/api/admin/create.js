@@ -2,10 +2,7 @@ import db from '@/lib/db'
 import { checkAuth } from '@/lib/authGuard'
 
 function toSlug(title) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
 
 async function uniqueSlug(base) {
@@ -27,8 +24,9 @@ export default async function handler(req, res) {
   const {
     title, lab_date, category, overview,
     impact_confidentiality, impact_integrity, impact_availability,
-    attack_vector, exploitation_walkthrough, mitigation,
-    tools_used, refs, screenshot_urls, published,
+    attack_vector, exploitation_walkthrough, mitigation, key_takeaways,
+    tools_used, tags, refs, screenshots,
+    cvss_score, difficulty, lab_environment, published,
   } = req.body
 
   if (!title || !lab_date || !category || !overview || !attack_vector || !exploitation_walkthrough || !mitigation) {
@@ -41,19 +39,24 @@ export default async function handler(req, res) {
     `INSERT INTO writeups
       (title, slug, lab_date, category, overview,
        impact_confidentiality, impact_integrity, impact_availability,
-       attack_vector, exploitation_walkthrough, mitigation,
-       tools_used, refs, screenshot_urls, published)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+       attack_vector, exploitation_walkthrough, mitigation, key_takeaways,
+       tools_used, tags, refs, screenshots,
+       cvss_score, difficulty, lab_environment, published)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
      RETURNING *`,
     [
       title, slug, lab_date, category, overview,
       impact_confidentiality || 'None',
       impact_integrity || 'None',
       impact_availability || 'None',
-      attack_vector, exploitation_walkthrough, mitigation,
+      attack_vector, exploitation_walkthrough, mitigation, key_takeaways || null,
       tools_used || [],
+      tags || [],
       JSON.stringify(refs || []),
-      screenshot_urls || [],
+      JSON.stringify(screenshots || []),
+      cvss_score || null,
+      difficulty || null,
+      lab_environment || null,
       published !== false,
     ]
   )

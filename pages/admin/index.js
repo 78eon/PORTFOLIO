@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import db from '@/lib/db'
+import { ADMIN } from '@/lib/adminPath'
 
 export async function getServerSideProps() {
   const [{ rows: writeups }, { rows: msgRows }] = await Promise.all([
@@ -46,9 +47,21 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
             <Link href="/" className="text-[#00ff41] font-mono text-sm hover:underline">← Public Site</Link>
             <h1 className="text-white text-xl font-bold mt-1">Admin Dashboard</h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap justify-end">
             <Link
-              href="/admin/messages"
+              href={`/${ADMIN}/tags`}
+              className="border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors"
+            >
+              Tags
+            </Link>
+            <Link
+              href={`/${ADMIN}/certifications`}
+              className="border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors"
+            >
+              Certifications
+            </Link>
+            <Link
+              href={`/${ADMIN}/messages`}
               className="relative border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors"
             >
               Messages
@@ -59,7 +72,7 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
               )}
             </Link>
             <Link
-              href="/admin/new"
+              href={`/${ADMIN}/new`}
               className="bg-[#00ff41] text-black font-bold text-sm px-4 py-2 rounded hover:bg-[#00cc33] transition-colors"
             >
               + New Writeup
@@ -77,7 +90,7 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
           {writeups.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-[#444] font-mono mb-4">No writeups yet.</p>
-              <Link href="/admin/new" className="text-[#00ff41] hover:underline font-mono text-sm">
+              <Link href={`/${ADMIN}/new`} className="text-[#00ff41] hover:underline font-mono text-sm">
                 + Create your first writeup
               </Link>
             </div>
@@ -118,7 +131,7 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-3">
                           <Link
-                            href={`/admin/edit/${w.id}`}
+                            href={`/${ADMIN}/edit/${w.id}`}
                             className="text-[#888] text-xs font-mono hover:text-[#00ff41] transition-colors"
                           >
                             Edit

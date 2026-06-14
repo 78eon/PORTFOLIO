@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import WriteupCard from '@/components/WriteupCard'
 import db from '@/lib/db'
 
 const CATEGORIES = ['All', 'Web', 'Network', 'Malware', 'Forensics', 'CTF', 'Other']
 
-// Replace the empty strings below with your actual profile usernames/URLs
 const SOCIAL_LINKS = [
   { label: 'GitHub', href: 'https://github.com/78eon' },
   { label: 'LinkedIn', href: '' },
@@ -55,27 +55,26 @@ function TypeWriter() {
 const inputCls = 'w-full bg-[#0a0a0a] border border-[#333] rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[#00ff41] transition-colors'
 
 function ContactForm() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
-  const [status, setStatus] = useState(null) // null | 'sending' | 'ok' | 'error'
+  const [form, setForm] = useState({ name: '', email: '', message: '', consent: false })
+  const [status, setStatus] = useState(null)
   const [errorMsg, setErrorMsg] = useState('')
 
-  function set(field, value) {
-    setForm(f => ({ ...f, [field]: value }))
-  }
+  function set(field, value) { setForm(f => ({ ...f, [field]: value })) }
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (!form.consent) return
     setStatus('sending')
     setErrorMsg('')
     const res = await fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
     })
     const json = await res.json()
     if (res.ok) {
       setStatus('ok')
-      setForm({ name: '', email: '', message: '' })
+      setForm({ name: '', email: '', message: '', consent: false })
     } else {
       setStatus('error')
       setErrorMsg(json.error || 'Something went wrong. Try again.')
@@ -88,10 +87,7 @@ function ContactForm() {
         <p className="text-[#00ff41] font-mono text-sm mb-1">[SUCCESS]</p>
         <p className="text-white font-semibold mb-2">Message received!</p>
         <p className="text-[#777] text-sm">I&apos;ll get back to you soon.</p>
-        <button
-          onClick={() => setStatus(null)}
-          className="mt-4 text-[#00ff41] text-xs font-mono hover:underline"
-        >
+        <button onClick={() => setStatus(null)} className="mt-4 text-[#00ff41] text-xs font-mono hover:underline">
           Send another message
         </button>
       </div>
@@ -103,44 +99,34 @@ function ContactForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-[#888] text-xs font-mono tracking-widest mb-1">NAME *</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={e => set('name', e.target.value)}
-            className={inputCls}
-            placeholder="Your name"
-            required
-          />
+          <input type="text" value={form.name} onChange={e => set('name', e.target.value)} className={inputCls} placeholder="Your name" required />
         </div>
         <div>
           <label className="block text-[#888] text-xs font-mono tracking-widest mb-1">EMAIL *</label>
-          <input
-            type="email"
-            value={form.email}
-            onChange={e => set('email', e.target.value)}
-            className={inputCls}
-            placeholder="your@email.com"
-            required
-          />
+          <input type="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} placeholder="your@email.com" required />
         </div>
       </div>
       <div>
         <label className="block text-[#888] text-xs font-mono tracking-widest mb-1">MESSAGE *</label>
-        <textarea
-          rows={5}
-          value={form.message}
-          onChange={e => set('message', e.target.value)}
-          className={inputCls}
-          placeholder="Your message, question, or collaboration idea..."
+        <textarea rows={5} value={form.message} onChange={e => set('message', e.target.value)} className={inputCls} placeholder="Your message, question, or collaboration idea..." required />
+      </div>
+      <label className="flex items-start gap-3 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={form.consent}
+          onChange={e => set('consent', e.target.checked)}
+          className="mt-0.5 w-4 h-4 accent-[#00ff41] flex-shrink-0"
           required
         />
-      </div>
-      {status === 'error' && (
-        <p className="text-red-400 text-xs font-mono">[ERROR] {errorMsg}</p>
-      )}
+        <span className="text-[#666] text-xs leading-relaxed">
+          I agree that my name and email will be stored to allow a reply. Read the{' '}
+          <Link href="/privacy" className="text-[#00ff41] hover:underline">Privacy Policy</Link>.
+        </span>
+      </label>
+      {status === 'error' && <p className="text-red-400 text-xs font-mono">[ERROR] {errorMsg}</p>}
       <button
         type="submit"
-        disabled={status === 'sending'}
+        disabled={status === 'sending' || !form.consent}
         className="w-full md:w-auto bg-[#00ff41] text-black font-bold text-sm px-8 py-2.5 rounded hover:bg-[#00cc33] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {status === 'sending' ? 'Sending...' : 'Send Message'}
@@ -149,22 +135,59 @@ function ContactForm() {
   )
 }
 
-export async function getStaticProps() {
-  const { rows } = await db.query(
-    'SELECT id, title, slug, category, lab_date, overview FROM writeups WHERE published = true ORDER BY lab_date DESC'
+function CertBadge({ cert }) {
+  const content = (
+    <div className="border border-[#222] bg-[#0d0d0d] rounded-lg p-4 hover:border-[#00ff41]/40 transition-colors h-full flex flex-col items-center text-center gap-3">
+      {cert.badge_url ? (
+        <img src={cert.badge_url} alt={cert.name} className="w-16 h-16 object-contain" />
+      ) : (
+        <div className="w-16 h-16 rounded-full border border-[#333] flex items-center justify-center text-[#00ff41] font-mono text-xl">
+          ✓
+        </div>
+      )}
+      <div>
+        <p className="text-white text-sm font-semibold leading-tight">{cert.name}</p>
+        <p className="text-[#666] text-xs mt-1">{cert.issuer}</p>
+        <p className="text-[#444] text-xs font-mono mt-1">
+          {new Date(cert.issue_date).getFullYear()}
+          {cert.expiry_date && ` – ${new Date(cert.expiry_date).getFullYear()}`}
+        </p>
+      </div>
+    </div>
   )
+
+  if (cert.credential_url) {
+    return (
+      <a href={cert.credential_url} target="_blank" rel="noopener noreferrer">
+        {content}
+      </a>
+    )
+  }
+  return content
+}
+
+export async function getStaticProps() {
+  const [{ rows: writeups }, { rows: certs }] = await Promise.all([
+    db.query('SELECT id, title, slug, category, lab_date, overview FROM writeups WHERE published = true ORDER BY lab_date DESC'),
+    db.query('SELECT * FROM certifications ORDER BY sort_order ASC, issue_date DESC'),
+  ])
   return {
     props: {
-      writeups: rows.map(r => ({
+      writeups: writeups.map(r => ({
         ...r,
         lab_date: r.lab_date.toISOString().split('T')[0],
+      })),
+      certifications: certs.map(r => ({
+        ...r,
+        issue_date: r.issue_date ? r.issue_date.toISOString().split('T')[0] : null,
+        expiry_date: r.expiry_date ? r.expiry_date.toISOString().split('T')[0] : null,
       })),
     },
     revalidate: 60,
   }
 }
 
-export default function Home({ writeups }) {
+export default function Home({ writeups, certifications }) {
   const [filter, setFilter] = useState('All')
   const visible = filter === 'All' ? writeups : writeups.filter(w => w.category === filter)
 
@@ -176,7 +199,6 @@ export default function Home({ writeups }) {
       </Head>
 
       <div className="min-h-screen bg-[#0a0a0a] text-white">
-        {/* Header */}
         <header className="border-b border-[#1a1a1a] px-6 py-4">
           <div className="max-w-6xl mx-auto">
             <span className="font-mono text-[#00ff41] text-sm tracking-wider">~/security-research</span>
@@ -210,6 +232,21 @@ export default function Home({ writeups }) {
             </div>
           </div>
         </section>
+
+        {/* Certifications */}
+        {certifications.length > 0 && (
+          <section className="max-w-6xl mx-auto px-6 pb-20">
+            <div className="mb-6">
+              <p className="text-[#00ff41] font-mono text-xs tracking-widest mb-1">{'// CERTIFICATIONS'}</p>
+              <h2 className="text-white text-lg font-bold">Credentials & Achievements</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {certifications.map(cert => (
+                <CertBadge key={cert.id} cert={cert} />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Writeups grid */}
         <section className="max-w-6xl mx-auto px-6 pb-20">
@@ -266,6 +303,9 @@ export default function Home({ writeups }) {
         <footer className="border-t border-[#1a1a1a] px-6 py-6 text-center">
           <p className="text-[#444] text-xs font-mono">
             Built with Next.js · {new Date().getFullYear()} · NEON
+          </p>
+          <p className="text-[#333] text-xs font-mono mt-1">
+            <Link href="/privacy" className="hover:text-[#666] transition-colors">Privacy Policy</Link>
           </p>
         </footer>
       </div>

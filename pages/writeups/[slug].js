@@ -6,8 +6,26 @@ import db from '@/lib/db'
 
 const IMPACT_COLOR = {
   None: 'text-[#555]',
-  Low: 'text-yellow-400',
-  High: 'text-red-400',
+  Low: 'text-blue-400',
+  Medium: 'text-yellow-400',
+  High: 'text-orange-400',
+  Critical: 'text-red-400',
+}
+
+const IMPACT_BG = {
+  None: '',
+  Low: 'bg-blue-900/10',
+  Medium: 'bg-yellow-900/10',
+  High: 'bg-orange-900/10',
+  Critical: 'bg-red-900/20',
+}
+
+const CVSS_COLOR = score => {
+  if (score === null || score === undefined) return 'text-[#666]'
+  if (score >= 9.0) return 'text-red-400'
+  if (score >= 7.0) return 'text-orange-400'
+  if (score >= 4.0) return 'text-yellow-400'
+  return 'text-blue-400'
 }
 
 function Section({ title, children }) {
@@ -37,6 +55,13 @@ export async function getStaticProps({ params }) {
   )
   if (!rows.length) return { notFound: true }
   const w = rows[0]
+
+  // Normalise screenshots: prefer new JSONB column, fall back to old TEXT[] column
+  let screenshots = w.screenshots || []
+  if (!screenshots.length && w.screenshot_urls?.length) {
+    screenshots = w.screenshot_urls.map(url => ({ url, description: '' }))
+  }
+
   return {
     props: {
       writeup: {
@@ -46,7 +71,12 @@ export async function getStaticProps({ params }) {
         updated_at: w.updated_at.toISOString(),
         refs: w.refs || [],
         tools_used: w.tools_used || [],
-        screenshot_urls: w.screenshot_urls || [],
+        tags: w.tags || [],
+        screenshots,
+        cvss_score: w.cvss_score ?? null,
+        difficulty: w.difficulty || null,
+        lab_environment: w.lab_environment || null,
+        key_takeaways: w.key_takeaways || null,
       },
     },
     revalidate: 60,
@@ -66,7 +96,6 @@ export default function WriteupDetail({ writeup }) {
       </Head>
 
       <div className="min-h-screen bg-[#0a0a0a] text-white">
-        {/* Header */}
         <header className="border-b border-[#1a1a1a] px-6 py-4">
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <Link href="/" className="text-[#00ff41] font-mono text-sm hover:underline">
@@ -77,16 +106,51 @@ export default function WriteupDetail({ writeup }) {
         </header>
 
         <main className="max-w-3xl mx-auto px-6 py-12">
-          {/* Title */}
+          {/* Title block */}
           <div className="mb-10">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-3 mb-4">
               <CategoryBadge category={writeup.category} />
+              {writeup.difficulty && (
+                <span className="text-[#666] text-xs font-mono border border-[#333] px-2 py-0.5 rounded">
+                  {writeup.difficulty}
+                </span>
+              )}
               <time className="text-[#555] text-xs font-mono">Lab Date: {date}</time>
             </div>
-            <h1 className="text-white text-2xl md:text-3xl font-bold leading-tight">
+            <h1 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-4">
               {writeup.title}
             </h1>
+            {/* Tags */}
+            {writeup.tags?.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {writeup.tags.map(tag => (
+                  <span key={tag} className="text-[#00ff41] text-xs font-mono border border-[#00ff41]/30 bg-[#00ff41]/5 px-2 py-0.5 rounded">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* Meta bar: CVSS + lab env */}
+          {(writeup.cvss_score !== null || writeup.lab_environment) && (
+            <div className="flex flex-wrap gap-6 mb-10 border border-[#1a1a1a] bg-[#0d0d0d] rounded-lg px-5 py-4">
+              {writeup.cvss_score !== null && (
+                <div>
+                  <p className="text-[#555] text-xs font-mono mb-1">CVSS SCORE</p>
+                  <p className={`font-bold font-mono text-lg ${CVSS_COLOR(writeup.cvss_score)}`}>
+                    {parseFloat(writeup.cvss_score).toFixed(1)}
+                  </p>
+                </div>
+              )}
+              {writeup.lab_environment && (
+                <div>
+                  <p className="text-[#555] text-xs font-mono mb-1">LAB ENVIRONMENT</p>
+                  <p className="text-white text-sm">{writeup.lab_environment}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Overview */}
           <Section title="// VULNERABILITY OVERVIEW">
@@ -101,7 +165,10 @@ export default function WriteupDetail({ writeup }) {
                 ['Integrity', writeup.impact_integrity],
                 ['Availability', writeup.impact_availability],
               ].map(([label, level]) => (
-                <div key={label} className="flex items-center border-b border-[#1a1a1a] last:border-b-0 px-5 py-3">
+                <div
+                  key={label}
+                  className={`flex items-center border-b border-[#1a1a1a] last:border-b-0 px-5 py-3 ${IMPACT_BG[level] || ''}`}
+                >
                   <span className="text-[#666] text-sm w-40 font-mono">{label}</span>
                   <span className={`font-bold text-sm font-mono ${IMPACT_COLOR[level] || IMPACT_COLOR.None}`}>
                     {level || 'None'}
@@ -132,15 +199,21 @@ export default function WriteupDetail({ writeup }) {
             </div>
           </Section>
 
+          {/* Key takeaways */}
+          {writeup.key_takeaways && (
+            <Section title="// KEY TAKEAWAYS">
+              <div className="border border-[#00ff41]/20 bg-[#00ff41]/5 rounded-lg p-5">
+                <p className="text-[#ccc] leading-relaxed">{writeup.key_takeaways}</p>
+              </div>
+            </Section>
+          )}
+
           {/* Tools */}
           {writeup.tools_used?.length > 0 && (
             <Section title="// TOOLS USED">
               <div className="flex flex-wrap gap-2">
                 {writeup.tools_used.map(tool => (
-                  <span
-                    key={tool}
-                    className="bg-[#111] border border-[#333] text-[#ccc] text-xs font-mono px-3 py-1 rounded-full"
-                  >
+                  <span key={tool} className="bg-[#111] border border-[#333] text-[#ccc] text-xs font-mono px-3 py-1 rounded-full">
                     {tool}
                   </span>
                 ))}
@@ -149,9 +222,9 @@ export default function WriteupDetail({ writeup }) {
           )}
 
           {/* Screenshots */}
-          {writeup.screenshot_urls?.length > 0 && (
+          {writeup.screenshots?.length > 0 && (
             <Section title="// SCREENSHOTS / EVIDENCE">
-              <ImageLightbox images={writeup.screenshot_urls} />
+              <ImageLightbox images={writeup.screenshots} />
             </Section>
           )}
 
@@ -176,7 +249,6 @@ export default function WriteupDetail({ writeup }) {
             </Section>
           )}
 
-          {/* Footer nav */}
           <div className="border-t border-[#1a1a1a] pt-8 mt-8">
             <Link href="/" className="text-[#00ff41] text-sm font-mono hover:underline">
               ← Back to all writeups

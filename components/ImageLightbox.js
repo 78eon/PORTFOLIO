@@ -1,38 +1,39 @@
 import { useState, useEffect } from 'react'
 
+// Accepts screenshots as [{url, description}] objects OR plain string URLs for backwards compat
 export default function ImageLightbox({ images }) {
-  const [open, setOpen] = useState(null)
+  const [openIdx, setOpenIdx] = useState(null)
+
+  const shots = (images || []).map(item =>
+    typeof item === 'string' ? { url: item, description: '' } : item
+  )
 
   useEffect(() => {
     function onKey(e) {
-      if (e.key === 'Escape') setOpen(null)
-      if (e.key === 'ArrowRight' && open) {
-        const i = images.indexOf(open)
-        if (i < images.length - 1) setOpen(images[i + 1])
-      }
-      if (e.key === 'ArrowLeft' && open) {
-        const i = images.indexOf(open)
-        if (i > 0) setOpen(images[i - 1])
-      }
+      if (e.key === 'Escape') setOpenIdx(null)
+      if (e.key === 'ArrowRight' && openIdx !== null && openIdx < shots.length - 1) setOpenIdx(i => i + 1)
+      if (e.key === 'ArrowLeft' && openIdx !== null && openIdx > 0) setOpenIdx(i => i - 1)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, images])
+  }, [openIdx, shots.length])
 
-  if (!images?.length) return null
+  if (!shots.length) return null
+
+  const active = openIdx !== null ? shots[openIdx] : null
 
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {images.map((url, i) => (
+        {shots.map((shot, i) => (
           <button
             key={i}
-            onClick={() => setOpen(url)}
-            className="group relative overflow-hidden rounded border border-[#333] hover:border-[#00ff41] transition-colors"
+            onClick={() => setOpenIdx(i)}
+            className="group relative overflow-hidden rounded border border-[#333] hover:border-[#00ff41] transition-colors text-left"
           >
             <img
-              src={url}
-              alt={`Screenshot ${i + 1}`}
+              src={shot.url}
+              alt={shot.description || `Screenshot ${i + 1}`}
               className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-200"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
@@ -40,29 +41,42 @@ export default function ImageLightbox({ images }) {
                 Click to expand
               </span>
             </div>
+            {shot.description && (
+              <div className="px-2 py-1.5 bg-[#0d0d0d] border-t border-[#222]">
+                <p className="text-[#888] text-xs truncate">{shot.description}</p>
+              </div>
+            )}
           </button>
         ))}
       </div>
 
-      {open && (
+      {active && (
         <div
-          className="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4"
-          onClick={() => setOpen(null)}
+          className="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 p-4"
+          onClick={() => setOpenIdx(null)}
         >
           <img
-            src={open}
-            alt="Screenshot"
-            className="max-h-[90vh] max-w-[90vw] object-contain rounded shadow-2xl"
+            src={active.url}
+            alt={active.description || 'Screenshot'}
+            className="max-h-[80vh] max-w-[90vw] object-contain rounded shadow-2xl"
             onClick={e => e.stopPropagation()}
           />
+          {active.description && (
+            <p
+              className="text-white/70 text-sm font-mono mt-4 max-w-xl text-center"
+              onClick={e => e.stopPropagation()}
+            >
+              {active.description}
+            </p>
+          )}
           <button
-            onClick={() => setOpen(null)}
+            onClick={() => setOpenIdx(null)}
             className="absolute top-4 right-4 text-white/60 hover:text-white text-3xl leading-none"
           >
             ×
           </button>
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/40 text-xs font-mono">
-            {images.indexOf(open) + 1} / {images.length} — press Esc to close, ← → to navigate
+            {openIdx + 1} / {shots.length} — press Esc to close, ← → to navigate
           </div>
         </div>
       )}

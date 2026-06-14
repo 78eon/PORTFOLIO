@@ -13,9 +13,14 @@ CREATE TABLE IF NOT EXISTS writeups (
   attack_vector TEXT NOT NULL,
   exploitation_walkthrough TEXT NOT NULL,
   mitigation TEXT NOT NULL,
+  key_takeaways TEXT,
   tools_used TEXT[] DEFAULT '{}',
+  tags TEXT[] DEFAULT '{}',
   refs JSONB DEFAULT '[]',
-  screenshot_urls TEXT[] DEFAULT '{}',
+  screenshots JSONB DEFAULT '[]',
+  cvss_score NUMERIC(3,1),
+  difficulty TEXT,
+  lab_environment TEXT,
   published BOOLEAN DEFAULT TRUE
 );
 
@@ -39,4 +44,23 @@ CREATE TABLE IF NOT EXISTS contacts (
   email TEXT NOT NULL,
   message TEXT NOT NULL,
   read BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS tags (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  name TEXT NOT NULL UNIQUE,
+  color TEXT NOT NULL DEFAULT '#6b7280'
+);
+
+CREATE TABLE IF NOT EXISTS certifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  name TEXT NOT NULL,
+  issuer TEXT NOT NULL,
+  issue_date DATE NOT NULL,
+  expiry_date DATE,
+  credential_url TEXT,
+  badge_url TEXT,
+  sort_order INT DEFAULT 0
 );
