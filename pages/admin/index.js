@@ -3,8 +3,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import db from '@/lib/db'
+import { checkAuth } from '@/lib/authGuard'
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req }) {
+  if (!checkAuth(req)) return { redirect: { destination: '/login', permanent: false } }
   const [{ rows: writeups }, { rows: msgRows }] = await Promise.all([
     db.query('SELECT id, title, category, lab_date, published, slug FROM writeups ORDER BY lab_date DESC'),
     db.query('SELECT COUNT(*) FROM contacts WHERE read = false'),

@@ -3,8 +3,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import WriteupForm from '@/components/WriteupForm'
 import db from '@/lib/db'
+import { checkAuth } from '@/lib/authGuard'
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ req, params }) {
+  if (!checkAuth(req)) return { redirect: { destination: '/login', permanent: false } }
   const { rows } = await db.query('SELECT * FROM writeups WHERE id = $1', [params.id])
   if (!rows.length) return { notFound: true }
   const w = rows[0]

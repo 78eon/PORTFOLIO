@@ -3,7 +3,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import WriteupForm from '@/components/WriteupForm'
 
-export async function getServerSideProps() {
+import { checkAuth } from '@/lib/authGuard'
+
+export async function getServerSideProps({ req }) {
+  if (!checkAuth(req)) return { redirect: { destination: '/login', permanent: false } }
   return { props: { adminPath: (process.env.ADMIN_PATH || 'admin').trim() } }
 }
 

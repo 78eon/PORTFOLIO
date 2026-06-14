@@ -2,8 +2,10 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
 import db from '@/lib/db'
+import { checkAuth } from '@/lib/authGuard'
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req }) {
+  if (!checkAuth(req)) return { redirect: { destination: '/login', permanent: false } }
   const { rows } = await db.query('SELECT * FROM tags ORDER BY name ASC')
   return { props: { initialTags: rows, adminPath: (process.env.ADMIN_PATH || 'admin').trim() } }
 }
