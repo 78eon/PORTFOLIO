@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
 
   async rewrites() {
-    const adminPath = process.env.NEXT_PUBLIC_ADMIN_PATH || 'admin'
+    const adminPath = (process.env.NEXT_PUBLIC_ADMIN_PATH || 'admin').trim()
     return [
       { source: `/${adminPath}`, destination: '/admin' },
       { source: `/${adminPath}/:path*`, destination: '/admin/:path*' },
