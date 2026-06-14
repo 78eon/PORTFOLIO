@@ -302,7 +302,7 @@ export default function Home({ writeups, certifications }) {
 
         <footer className="border-t border-[#1a1a1a] px-6 py-6 text-center">
           <p className="text-[#444] text-xs font-mono">
-            Built with Next.js · {new Date().getFullYear()} · NEON
+            {new Date().getFullYear()} · NEON
           </p>
           <p className="text-[#333] text-xs font-mono mt-1">
             <Link href="/privacy" className="hover:text-[#666] transition-colors">Privacy Policy</Link>
