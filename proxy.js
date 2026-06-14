@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-export function middleware(request) {
+export function proxy(request) {
   const { pathname } = request.nextUrl
   const adminPath = process.env.NEXT_PUBLIC_ADMIN_PATH || 'admin'
 
