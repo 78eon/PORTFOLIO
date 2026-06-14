@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import db from '@/lib/db'
-import { ADMIN } from '@/lib/adminPath'
 
 export async function getServerSideProps() {
   const [{ rows: writeups }, { rows: msgRows }] = await Promise.all([
@@ -17,11 +16,12 @@ export async function getServerSideProps() {
         lab_date: r.lab_date.toISOString().split('T')[0],
       })),
       unreadMessages: parseInt(msgRows[0].count, 10),
+      adminPath: (process.env.ADMIN_PATH || 'admin').trim(),
     },
   }
 }
 
-export default function AdminDashboard({ writeups, unreadMessages }) {
+export default function AdminDashboard({ writeups, unreadMessages, adminPath }) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(null)
 
@@ -48,22 +48,13 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
             <h1 className="text-white text-xl font-bold mt-1">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-3 flex-wrap justify-end">
-            <Link
-              href={`/${ADMIN}/tags`}
-              className="border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors"
-            >
+            <Link href={`/${adminPath}/tags`} className="border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors">
               Tags
             </Link>
-            <Link
-              href={`/${ADMIN}/certifications`}
-              className="border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors"
-            >
+            <Link href={`/${adminPath}/certifications`} className="border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors">
               Certifications
             </Link>
-            <Link
-              href={`/${ADMIN}/messages`}
-              className="relative border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors"
-            >
+            <Link href={`/${adminPath}/messages`} className="relative border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors">
               Messages
               {unreadMessages > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-[#00ff41] text-black text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
@@ -71,16 +62,10 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
                 </span>
               )}
             </Link>
-            <Link
-              href={`/${ADMIN}/new`}
-              className="bg-[#00ff41] text-black font-bold text-sm px-4 py-2 rounded hover:bg-[#00cc33] transition-colors"
-            >
+            <Link href={`/${adminPath}/new`} className="bg-[#00ff41] text-black font-bold text-sm px-4 py-2 rounded hover:bg-[#00cc33] transition-colors">
               + New Writeup
             </Link>
-            <button
-              onClick={handleLogout}
-              className="border border-[#333] text-[#888] text-sm px-3 py-2 rounded hover:border-red-500 hover:text-red-400 transition-colors"
-            >
+            <button onClick={handleLogout} className="border border-[#333] text-[#888] text-sm px-3 py-2 rounded hover:border-red-500 hover:text-red-400 transition-colors">
               Logout
             </button>
           </div>
@@ -90,7 +75,7 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
           {writeups.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-[#444] font-mono mb-4">No writeups yet.</p>
-              <Link href={`/${ADMIN}/new`} className="text-[#00ff41] hover:underline font-mono text-sm">
+              <Link href={`/${adminPath}/new`} className="text-[#00ff41] hover:underline font-mono text-sm">
                 + Create your first writeup
               </Link>
             </div>
@@ -108,21 +93,14 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
                 </thead>
                 <tbody>
                   {writeups.map((w, i) => (
-                    <tr
-                      key={w.id}
-                      className={`border-b border-[#1a1a1a] hover:bg-[#0d0d0d] transition-colors ${i % 2 === 0 ? '' : 'bg-[#0c0c0c]'}`}
-                    >
+                    <tr key={w.id} className={`border-b border-[#1a1a1a] hover:bg-[#0d0d0d] transition-colors ${i % 2 === 0 ? '' : 'bg-[#0c0c0c]'}`}>
                       <td className="px-4 py-3">
                         <Link href={`/writeups/${w.slug}`} target="_blank" className="text-white text-sm hover:text-[#00ff41] transition-colors">
                           {w.title}
                         </Link>
                       </td>
-                      <td className="px-4 py-3">
-                        <span className="text-[#888] text-xs font-mono">{w.category}</span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="text-[#666] text-xs font-mono">{w.lab_date}</span>
-                      </td>
+                      <td className="px-4 py-3"><span className="text-[#888] text-xs font-mono">{w.category}</span></td>
+                      <td className="px-4 py-3"><span className="text-[#666] text-xs font-mono">{w.lab_date}</span></td>
                       <td className="px-4 py-3">
                         <span className={`text-xs font-mono px-2 py-0.5 rounded ${w.published ? 'bg-green-900/30 text-green-400' : 'bg-gray-800 text-gray-500'}`}>
                           {w.published ? 'Published' : 'Draft'}
@@ -130,12 +108,7 @@ export default function AdminDashboard({ writeups, unreadMessages }) {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-3">
-                          <Link
-                            href={`/${ADMIN}/edit/${w.id}`}
-                            className="text-[#888] text-xs font-mono hover:text-[#00ff41] transition-colors"
-                          >
-                            Edit
-                          </Link>
+                          <Link href={`/${adminPath}/edit/${w.id}`} className="text-[#888] text-xs font-mono hover:text-[#00ff41] transition-colors">Edit</Link>
                           <button
                             onClick={() => handleDelete(w.id, w.title)}
                             disabled={deleting === w.id}

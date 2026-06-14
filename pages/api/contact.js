@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const ip = getIP(req)
-  if (rateLimit(ip, { max: 3, windowMs: 60 * 60 * 1000 })) {
+  if (await rateLimit(ip, { max: 3, windowMs: 60 * 60 * 1000 })) {
     return res.status(429).json({ error: 'Too many messages. Please wait an hour before trying again.' })
   }
 

@@ -1,10 +1,18 @@
+import crypto from 'crypto'
 import { rateLimit, getIP } from '@/lib/rateLimit'
+
+function sessionToken() {
+  return crypto
+    .createHmac('sha256', process.env.ADMIN_PASSWORD)
+    .update('admin-session-v1')
+    .digest('hex')
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const ip = getIP(req)
-  if (rateLimit(ip, { max: 5, windowMs: 15 * 60 * 1000 })) {
+  if (await rateLimit(ip, { max: 5, windowMs: 15 * 60 * 1000 })) {
     return res.status(429).json({ error: 'Too many attempts. Try again in 15 minutes.' })
   }
 
@@ -14,10 +22,11 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Wrong password' })
   }
 
+  const token = sessionToken()
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
   res.setHeader(
     'Set-Cookie',
-    `admin_session=${process.env.ADMIN_PASSWORD}; HttpOnly; Path=/; Max-Age=86400; SameSite=Strict${secure}`
+    `admin_session=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=Strict${secure}`
   )
   res.json({ ok: true })
 }

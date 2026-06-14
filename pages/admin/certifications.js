@@ -1,13 +1,13 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
-import { ADMIN } from '@/lib/adminPath'
 import db from '@/lib/db'
 
 export async function getServerSideProps() {
   const { rows } = await db.query('SELECT * FROM certifications ORDER BY sort_order ASC, issue_date DESC')
   return {
     props: {
+      adminPath: (process.env.ADMIN_PATH || 'admin').trim(),
       initialCerts: rows.map(r => ({
         ...r,
         issue_date: r.issue_date ? r.issue_date.toISOString().split('T')[0] : '',
@@ -20,7 +20,7 @@ export async function getServerSideProps() {
 const EMPTY_CERT = { name: '', issuer: '', issue_date: '', expiry_date: '', credential_url: '', badge_url: '', sort_order: 0 }
 const inputCls = 'w-full bg-[#0a0a0a] border border-[#333] rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[#00ff41] transition-colors'
 
-export default function CertificationsAdmin({ initialCerts }) {
+export default function CertificationsAdmin({ initialCerts, adminPath }) {
   const [certs, setCerts] = useState(initialCerts)
   const [form, setForm] = useState(EMPTY_CERT)
   const [editId, setEditId] = useState(null)
@@ -31,10 +31,17 @@ export default function CertificationsAdmin({ initialCerts }) {
   function setF(field, value) { setForm(f => ({ ...f, [field]: value })) }
   function setE(field, value) { setEditData(d => ({ ...d, [field]: value })) }
 
+  function normCert(json) {
+    return {
+      ...json,
+      issue_date: json.issue_date ? json.issue_date.split('T')[0] : '',
+      expiry_date: json.expiry_date ? json.expiry_date.split('T')[0] : '',
+    }
+  }
+
   async function createCert(e) {
     e.preventDefault()
-    setSaving(true)
-    setError('')
+    setSaving(true); setError('')
     const res = await fetch('/api/admin/create-cert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -43,12 +50,7 @@ export default function CertificationsAdmin({ initialCerts }) {
     const json = await res.json()
     setSaving(false)
     if (!res.ok) { setError(json.error || 'Failed'); return }
-    const cert = {
-      ...json,
-      issue_date: json.issue_date ? json.issue_date.split('T')[0] : '',
-      expiry_date: json.expiry_date ? json.expiry_date.split('T')[0] : '',
-    }
-    setCerts(c => [...c, cert].sort((a, b) => (a.sort_order - b.sort_order) || (b.issue_date > a.issue_date ? 1 : -1)))
+    setCerts(c => [...c, normCert(json)].sort((a, b) => (a.sort_order - b.sort_order) || (b.issue_date > a.issue_date ? 1 : -1)))
     setForm(EMPTY_CERT)
   }
 
@@ -62,17 +64,12 @@ export default function CertificationsAdmin({ initialCerts }) {
     const json = await res.json()
     setSaving(false)
     if (!res.ok) { setError(json.error || 'Failed'); return }
-    const cert = {
-      ...json,
-      issue_date: json.issue_date ? json.issue_date.split('T')[0] : '',
-      expiry_date: json.expiry_date ? json.expiry_date.split('T')[0] : '',
-    }
-    setCerts(c => c.map(cert2 => cert2.id === id ? cert : cert2).sort((a, b) => (a.sort_order - b.sort_order) || (b.issue_date > a.issue_date ? 1 : -1)))
+    setCerts(c => c.map(cert => cert.id === id ? normCert(json) : cert).sort((a, b) => (a.sort_order - b.sort_order) || (b.issue_date > a.issue_date ? 1 : -1)))
     setEditId(null)
   }
 
   async function deleteCert(id, name) {
-    if (!confirm(`Delete certification "${name}"?`)) return
+    if (!confirm(`Delete "${name}"?`)) return
     await fetch(`/api/certifications/${id}`, { method: 'DELETE' })
     setCerts(c => c.filter(cert => cert.id !== id))
   }
@@ -123,9 +120,7 @@ export default function CertificationsAdmin({ initialCerts }) {
       <Head><title>Certifications — Admin</title></Head>
       <div className="min-h-screen bg-[#0a0a0a] text-white">
         <header className="border-b border-[#222] px-6 py-4">
-          <Link href={`/${ADMIN}`} className="text-[#00ff41] font-mono text-sm hover:underline">
-            ← Back to Dashboard
-          </Link>
+          <Link href={`/${adminPath}`} className="text-[#00ff41] font-mono text-sm hover:underline">← Back to Dashboard</Link>
           <h1 className="text-white text-xl font-bold mt-1">Manage Certifications</h1>
         </header>
 
@@ -144,48 +139,28 @@ export default function CertificationsAdmin({ initialCerts }) {
                   {editId === cert.id ? (
                     <>
                       <h3 className="text-[#00ff41] font-mono text-xs tracking-widest mb-4">{'// EDITING'}</h3>
-                      <CertForm
-                        data={editData}
-                        setData={setE}
-                        onSubmit={e => { e.preventDefault(); saveEdit(cert.id) }}
-                        label="Save Changes"
-                      />
+                      <CertForm data={editData} setData={setE} onSubmit={e => { e.preventDefault(); saveEdit(cert.id) }} label="Save Changes" />
                       <button onClick={() => setEditId(null)} className="text-[#666] text-xs font-mono mt-3 hover:text-white">Cancel</button>
                     </>
                   ) : (
                     <div className="flex items-start gap-4">
-                      {cert.badge_url && (
-                        <img src={cert.badge_url} alt={cert.name} className="w-16 h-16 object-contain flex-shrink-0" />
-                      )}
+                      {cert.badge_url && <img src={cert.badge_url} alt={cert.name} className="w-16 h-16 object-contain flex-shrink-0" />}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-4">
                           <div>
                             <p className="text-white font-semibold">{cert.name}</p>
                             <p className="text-[#888] text-sm">{cert.issuer}</p>
                             <p className="text-[#666] text-xs font-mono mt-1">
-                              Issued: {cert.issue_date}
-                              {cert.expiry_date && ` · Expires: ${cert.expiry_date}`}
+                              Issued: {cert.issue_date}{cert.expiry_date && ` · Expires: ${cert.expiry_date}`}
                             </p>
                           </div>
                           <div className="flex gap-3 flex-shrink-0">
-                            <button
-                              onClick={() => { setEditId(cert.id); setEditData({ ...cert }) }}
-                              className="text-[#888] text-xs font-mono hover:text-[#00ff41] transition-colors"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => deleteCert(cert.id, cert.name)}
-                              className="text-[#666] text-xs font-mono hover:text-red-400 transition-colors"
-                            >
-                              Delete
-                            </button>
+                            <button onClick={() => { setEditId(cert.id); setEditData({ ...cert }) }} className="text-[#888] text-xs font-mono hover:text-[#00ff41] transition-colors">Edit</button>
+                            <button onClick={() => deleteCert(cert.id, cert.name)} className="text-[#666] text-xs font-mono hover:text-red-400 transition-colors">Delete</button>
                           </div>
                         </div>
                         {cert.credential_url && (
-                          <a href={cert.credential_url} target="_blank" rel="noopener noreferrer" className="text-[#00ff41] text-xs font-mono mt-2 inline-block hover:underline">
-                            View Credential →
-                          </a>
+                          <a href={cert.credential_url} target="_blank" rel="noopener noreferrer" className="text-[#00ff41] text-xs font-mono mt-2 inline-block hover:underline">View Credential →</a>
                         )}
                       </div>
                     </div>
