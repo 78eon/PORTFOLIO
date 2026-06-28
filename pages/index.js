@@ -190,6 +190,7 @@ export default function Home({ writeups, certifications }) {
             <span className="font-mono text-[#00ff9d] text-sm tracking-wider">~/security-research</span>
             <div className="flex items-center gap-6">
               <a href="#research" className="text-[#475569] text-xs font-mono hover:text-white transition-colors">Research</a>
+              <Link href="/notes" className="text-[#475569] text-xs font-mono hover:text-white transition-colors">Notes</Link>
               <a href="#contact" className="text-[#475569] text-xs font-mono hover:text-white transition-colors">Contact</a>
             </div>
           </div>
@@ -336,9 +337,10 @@ export default function Home({ writeups, certifications }) {
         <footer className="border-t border-[#0f172a] px-6 py-8">
           <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-4">
             <span className="font-mono text-[#334155] text-xs">© {new Date().getFullYear()} NEON</span>
-            <Link href="/privacy" className="text-[#334155] text-xs font-mono hover:text-[#475569] transition-colors">
-              Privacy Policy
-            </Link>
+            <div className="flex items-center gap-5">
+              <Link href="/notes" className="text-[#334155] text-xs font-mono hover:text-[#475569] transition-colors">Notes</Link>
+              <Link href="/privacy" className="text-[#334155] text-xs font-mono hover:text-[#475569] transition-colors">Privacy Policy</Link>
+            </div>
           </div>
         </footer>
       </div>

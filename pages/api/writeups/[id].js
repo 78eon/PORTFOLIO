@@ -13,6 +13,16 @@ export default async function handler(req, res) {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' })
 
   if (req.method === 'PATCH') {
+    // Partial update: only category (from dashboard inline edit)
+    if (Object.keys(req.body).length === 1 && req.body.category !== undefined) {
+      const { rows } = await db.query(
+        'UPDATE writeups SET category=$1 WHERE id=$2 RETURNING id',
+        [req.body.category, id]
+      )
+      if (!rows.length) return res.status(404).json({ error: 'Not found' })
+      return res.json({ ok: true })
+    }
+
     const {
       title, lab_date, category, overview,
       impact_confidentiality, impact_integrity, impact_availability,

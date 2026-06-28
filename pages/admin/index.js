@@ -5,6 +5,8 @@ import { useState } from 'react'
 import db from '@/lib/db'
 import { checkAuth } from '@/lib/authGuard'
 
+const CATEGORIES = ['Web', 'Network', 'Malware', 'Forensics', 'CTF', 'Other']
+
 export async function getServerSideProps({ req }) {
   if (!checkAuth(req)) return { redirect: { destination: '/login', permanent: false } }
   const [{ rows: writeups }, { rows: msgRows }] = await Promise.all([
@@ -26,6 +28,18 @@ export async function getServerSideProps({ req }) {
 export default function AdminDashboard({ writeups, unreadMessages, adminPath }) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(null)
+  const [editingCat, setEditingCat] = useState(null)
+
+  async function handleCategoryChange(id, category) {
+    setEditingCat(id)
+    await fetch(`/api/writeups/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category }),
+    })
+    setEditingCat(null)
+    router.replace(router.asPath)
+  }
 
   async function handleDelete(id, title) {
     if (!confirm(`Delete "${title}"? This cannot be undone.`)) return
@@ -64,6 +78,9 @@ export default function AdminDashboard({ writeups, unreadMessages, adminPath }) 
                 </span>
               )}
             </Link>
+            <Link href={`/${adminPath}/notes`} className="border border-[#333] text-[#aaa] text-sm px-4 py-2 rounded hover:border-[#00ff41] hover:text-[#00ff41] transition-colors">
+              Notes
+            </Link>
             <Link href={`/${adminPath}/new`} className="bg-[#00ff41] text-black font-bold text-sm px-4 py-2 rounded hover:bg-[#00cc33] transition-colors">
               + New Writeup
             </Link>
@@ -101,7 +118,16 @@ export default function AdminDashboard({ writeups, unreadMessages, adminPath }) 
                           {w.title}
                         </Link>
                       </td>
-                      <td className="px-4 py-3"><span className="text-[#888] text-xs font-mono">{w.category}</span></td>
+                      <td className="px-4 py-3">
+                        <select
+                          value={w.category}
+                          disabled={editingCat === w.id}
+                          onChange={e => handleCategoryChange(w.id, e.target.value)}
+                          className="bg-transparent text-[#888] text-xs font-mono border border-transparent hover:border-[#333] focus:border-[#00ff41] rounded px-1 py-0.5 cursor-pointer transition-colors disabled:opacity-40"
+                        >
+                          {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#111]">{c}</option>)}
+                        </select>
+                      </td>
                       <td className="px-4 py-3"><span className="text-[#666] text-xs font-mono">{w.lab_date}</span></td>
                       <td className="px-4 py-3">
                         <span className={`text-xs font-mono px-2 py-0.5 rounded ${w.published ? 'bg-green-900/30 text-green-400' : 'bg-gray-800 text-gray-500'}`}>
