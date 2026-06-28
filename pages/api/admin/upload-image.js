@@ -22,6 +22,7 @@ export default async function handler(req, res) {
     const url = await uploadFile(data, contentType)
     res.json({ url })
   } catch (err) {
+    console.error('[upload-image] error:', err.message)
     res.status(500).json({ error: err.message || 'Upload failed' })
   }
 }
