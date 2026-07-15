@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import MarkdownEditor from './MarkdownEditor'
 
 const CATEGORIES = ['Networking', 'Tool', 'Algorithm', 'Protocol', 'Security', 'OS', 'Other']
 
@@ -163,13 +164,12 @@ export default function NoteForm({ initial, adminPath }) {
           <span>// HOW IT WORKS / DETAILS</span>
           <span className="flex-1 h-px bg-gradient-to-r from-[#1a1a30] to-transparent" />
         </h2>
-        <label className={labelCls}>IN-DEPTH NOTES</label>
-        <textarea
-          rows={12}
+        <label className={labelCls}>IN-DEPTH NOTES — use the toolbar to format with headings, bold, code blocks, lists…</label>
+        <MarkdownEditor
           value={form.content}
-          onChange={e => set('content', e.target.value)}
-          className={`${inputCls} font-mono text-xs`}
-          placeholder={`Explain the concept in detail. How does it work under the hood? What are the important parts?\n\nFor a tool: what is it used for, how is it proposed, what does each flag do?\nFor a port/protocol: what runs on it, how does the handshake work?\nFor an algorithm: steps, complexity, security relevance?`}
+          onChange={v => set('content', v)}
+          rows={14}
+          placeholder={`Explain the concept in detail. Use ## Heading for sections.\n\nFor a tool: what is it used for, how is it proposed, what does each flag do?\nFor a port/protocol: what runs on it, how does the handshake work?\nFor an algorithm: steps, complexity, security relevance?`}
         />
       </section>
 
@@ -179,13 +179,12 @@ export default function NoteForm({ initial, adminPath }) {
           <span>// PRACTICAL EXAMPLES / COMMANDS</span>
           <span className="flex-1 h-px bg-gradient-to-r from-[#1a1a30] to-transparent" />
         </h2>
-        <label className={labelCls}>USAGE EXAMPLES (optional)</label>
-        <textarea
-          rows={8}
+        <label className={labelCls}>USAGE EXAMPLES (optional) — use ``` for code blocks</label>
+        <MarkdownEditor
           value={form.examples}
-          onChange={e => set('examples', e.target.value)}
-          className={`${inputCls} font-mono text-xs`}
-          placeholder={`# Example commands, code snippets, or real-world scenarios\nnmap -sV -p 80,443 target.com\n\n# What does this output mean?\n# PORT   STATE  SERVICE  VERSION\n# 80/tcp open   http     Apache httpd 2.4.41`}
+          onChange={v => set('examples', v)}
+          rows={8}
+          placeholder={`\`\`\`bash\nnmap -sV -p 80,443 target.com\n\`\`\`\n\nExplain what the output means, walk through the result step by step.`}
         />
       </section>
 
