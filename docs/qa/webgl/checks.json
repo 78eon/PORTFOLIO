@@ -1,0 +1,362 @@
+{
+  "checks": [
+    {
+      "name": "WebGL defers until exploration is visible",
+      "passed": true
+    },
+    {
+      "name": "static map is present before 3D loads",
+      "passed": true
+    },
+    {
+      "name": "native WebGL renderer loads",
+      "passed": true
+    },
+    {
+      "name": "no iframe installed",
+      "passed": true
+    },
+    {
+      "name": "seven selectable domains",
+      "passed": true
+    },
+    {
+      "name": "ambient scene draws frames",
+      "passed": true
+    },
+    {
+      "name": "Threat Intel exposes six concepts (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "Threat Intel node selection updates description (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "VAPT exposes six concepts (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "VAPT node selection updates description (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "GRC exposes six concepts (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "GRC node selection updates description (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "Red / Blue / Purple exposes six concepts (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "Red / Blue / Purple node selection updates description (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "Hacker Ethics exposes six concepts (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "Hacker Ethics node selection updates description (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "Information Security exposes six concepts (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "Information Security node selection updates description (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "SOC / Incident Response exposes six concepts (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "SOC / Incident Response node selection updates description (cycle 1)",
+      "passed": true
+    },
+    {
+      "name": "Threat Intel exposes six concepts (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "Threat Intel node selection updates description (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "VAPT exposes six concepts (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "VAPT node selection updates description (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "GRC exposes six concepts (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "GRC node selection updates description (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "Red / Blue / Purple exposes six concepts (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "Red / Blue / Purple node selection updates description (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "Hacker Ethics exposes six concepts (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "Hacker Ethics node selection updates description (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "Information Security exposes six concepts (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "Information Security node selection updates description (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "SOC / Incident Response exposes six concepts (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "SOC / Incident Response node selection updates description (cycle 2)",
+      "passed": true
+    },
+    {
+      "name": "Threat Intel exposes six concepts (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "Threat Intel node selection updates description (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "VAPT exposes six concepts (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "VAPT node selection updates description (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "GRC exposes six concepts (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "GRC node selection updates description (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "Red / Blue / Purple exposes six concepts (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "Red / Blue / Purple node selection updates description (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "Hacker Ethics exposes six concepts (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "Hacker Ethics node selection updates description (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "Information Security exposes six concepts (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "Information Security node selection updates description (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "SOC / Incident Response exposes six concepts (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "SOC / Incident Response node selection updates description (cycle 3)",
+      "passed": true
+    },
+    {
+      "name": "domain changes dispose old GPU buffers",
+      "passed": true
+    },
+    {
+      "name": "GPU buffer count remains bounded across domain changes",
+      "passed": true
+    },
+    {
+      "name": "GRC qualitative matrix is accessible",
+      "passed": true
+    },
+    {
+      "name": "active GRC scene has zero axe violations",
+      "passed": true
+    },
+    {
+      "name": "real research links come from published data",
+      "passed": true
+    },
+    {
+      "name": "pause stops idle draws",
+      "passed": true
+    },
+    {
+      "name": "HTML zoom control moves camera",
+      "passed": true
+    },
+    {
+      "name": "keyboard camera orbit works",
+      "passed": true
+    },
+    {
+      "name": "pointer raycast selects a node",
+      "passed": true
+    },
+    {
+      "name": "offscreen scene stops drawing",
+      "passed": true
+    },
+    {
+      "name": "hidden document stops drawing",
+      "passed": true
+    },
+    {
+      "name": "manual static mode unmounts WebGL",
+      "passed": true
+    },
+    {
+      "name": "manual static choice survives scrolling",
+      "passed": true
+    },
+    {
+      "name": "static mode leaves concept selection functional",
+      "passed": true
+    },
+    {
+      "name": "context loss restores static map",
+      "passed": true
+    },
+    {
+      "name": "context loss can recover with a new renderer",
+      "passed": true
+    },
+    {
+      "name": "route unmount disposes GPU programs",
+      "passed": true
+    },
+    {
+      "name": "no page overflow at 1440px",
+      "passed": true
+    },
+    {
+      "name": "3D opt-in on small screens 1440px",
+      "passed": true
+    },
+    {
+      "name": "no page overflow at 768px",
+      "passed": true
+    },
+    {
+      "name": "3D opt-in on small screens 768px",
+      "passed": true
+    },
+    {
+      "name": "no page overflow at 390px",
+      "passed": true
+    },
+    {
+      "name": "3D opt-in on small screens 390px",
+      "passed": true
+    },
+    {
+      "name": "no page overflow at 320px",
+      "passed": true
+    },
+    {
+      "name": "3D opt-in on small screens 320px",
+      "passed": true
+    },
+    {
+      "name": "reduced motion defaults to static map",
+      "passed": true
+    },
+    {
+      "name": "reduced-motion 3D draws only on demand",
+      "passed": true
+    },
+    {
+      "name": "WebGL failure preserves HTML domain interaction",
+      "passed": true
+    },
+    {
+      "name": "WebGL failure preserves static graph",
+      "passed": true
+    },
+    {
+      "name": "failed dynamic import preserves usable HTML concepts",
+      "passed": true
+    },
+    {
+      "name": "server-rendered map survives without JavaScript",
+      "passed": true
+    },
+    {
+      "name": "server-rendered concept explanation survives without JavaScript",
+      "passed": true
+    },
+    {
+      "name": "no hydration or runtime exceptions",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "profiles": [
+    {
+      "label": "visible ambient scene",
+      "frames": 62,
+      "draws": 432
+    },
+    {
+      "label": "21 domain rebuilds",
+      "createdBuffers": 366,
+      "deletedBuffers": 366,
+      "remainingBufferGrowth": 0
+    },
+    {
+      "label": "ambient motion paused",
+      "frames": 31,
+      "draws": 0
+    },
+    {
+      "label": "explorer offscreen",
+      "frames": 0,
+      "draws": 0
+    },
+    {
+      "label": "document hidden",
+      "frames": 0,
+      "draws": 0
+    },
+    {
+      "label": "reduced-motion 3D",
+      "frames": 0,
+      "draws": 0
+    }
+  ]
+}

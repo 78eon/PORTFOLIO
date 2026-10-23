@@ -32,11 +32,11 @@ export default function Hero() {
           A closer look at how systems break.
           <br />
           Practical labs, CTF writeups, and vulnerability research—documented
-          along the way.
+          along the way. Explore how security disciplines connect below.
         </p>
         <div className="hero-actions">
-          <a className="button button-primary" href="#research">
-            Explore research <Icon name="down" size={17} />
+          <a className="button button-primary" href="#cyber-explorer">
+            Explore security domains <Icon name="down" size={17} />
           </a>
           <a
             className="button button-quiet"

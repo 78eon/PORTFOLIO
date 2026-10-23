@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Icon from '@/components/Icon'
 
 const links = [
+  ['Explore', '/#cyber-explorer'],
   ['Research', '/#research'],
   ['Notes', '/notes'],
   ['About', '/#about'],

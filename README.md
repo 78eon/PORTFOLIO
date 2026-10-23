@@ -38,3 +38,9 @@ The hook is enabled for this checkout. Codex requires approving a new hook throu
 ```sh
 .agents/skills/impeccable/scripts/impeccable hooks status
 ```
+
+## Cybersecurity domain explorer
+
+The homepage now includes a native React/Three.js educational map at `/#cyber-explorer`, with seven selectable domains, HTML concept/camera controls and a complete static fallback. Graphs are illustrative, not operational telemetry. Mobile and reduced-motion users start with the static view and can opt into 3D. Existing PostgreSQL ISR and portfolio workflows are preserved.
+
+See [integration architecture, changed files and validation](docs/WEBGL_INTEGRATION.md) and [local QA commands](scripts/qa/README.md).
