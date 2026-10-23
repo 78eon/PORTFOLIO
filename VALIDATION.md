@@ -60,3 +60,11 @@ npm start
 ```
 
 The existing Docker Compose workflow is also available via `docker compose up --build` when Docker access is configured; it was not executable in this shell. Existing schemas/migrations remain a separate operator responsibility, not an automatic redesign action. Temporary QA server/database were stopped after validation, and the QA-generated `.next` output removed so test content cannot be mistaken for production content. No new npm dependency is needed by the application; Playwright, axe, Lighthouse and formatting tools ran outside the project dependencies.
+
+## Follow-up setup — 2026-10-23
+
+Applied the user's additional setup instructions in the existing checkout and redesign branch. `npm ci` succeeded; `npx impeccable install --providers=codex --project --yes` installed Impeccable 4.7.0 and engine v0.1.16. Its context command recognized the existing PRODUCT.md and DESIGN.md; no product/design content was overwritten. `impeccable hooks on` enabled shared hook settings and installed `.codex/hooks.json`; status confirmed enabled. Codex first-use hook approval remains a native `/hooks` action, as required by the installed skill. Downloaded skill/engine files and private consent stay local and are ignored; README documents reinstallation.
+
+`npm install motion` added Motion 14.6.0 and its dependencies. The library is available but not imported by current presentation code. Application routes, PostgreSQL queries and homepage `revalidate: 60` are unchanged. ESLint excludes installed third-party `.agents` tooling. Lint and production build passed again against the same disposable PostgreSQL test database. No UI changes occurred, so earlier browser/accessibility evidence remains applicable; Lighthouse was not rerun for this dependency-only follow-up. QA services were stopped and generated fixture build output removed afterward.
+
+The context command reported a timestamp-based stale design-sidecar notice. It does not block installation or alter the design; `$impeccable document` is the offered refresh command. No automatic drift repair was performed. npm reported the same 15 audit findings before and after Motion installation; dependency remediation was outside these setup instructions.

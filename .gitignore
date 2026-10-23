@@ -42,3 +42,7 @@ next-env.d.ts
 
 # Local screenshot evidence contains disposable QA fixtures
 /.impeccable/review/
+
+# Reinstallable project-local design tools and private hook consent
+/.agents/skills/impeccable/
+/.impeccable/config.local.json
