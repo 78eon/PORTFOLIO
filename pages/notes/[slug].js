@@ -1,3 +1,6 @@
+import { dateOnly } from '@/lib/date'
+import SiteHeader from '@/components/layout/SiteHeader'
+import SiteFooter from '@/components/layout/SiteFooter'
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -28,8 +31,8 @@ function ReadingProgress() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] h-0.5 bg-[#0f172a]">
-      <div className="h-full bg-gradient-to-r from-[#00ff9d] to-[#818cf8] transition-all duration-100"
+    <div className="fixed top-0 left-0 right-0 z-[60] h-0.5 bg-[var(--surface-secondary)]">
+      <div className="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--cyan)] transition-all duration-100"
         style={{ width: `${pct}%` }} />
     </div>
   )
@@ -39,16 +42,16 @@ function TableOfContents({ headings, activeId }) {
   if (!headings.length) return null
   return (
     <nav className="space-y-1">
-      <p className="text-[#334155] text-[10px] font-mono tracking-widest mb-3">IN THIS ARTICLE</p>
+      <p className="text-[var(--muted)] text-[10px] font-mono tracking-widest mb-3">IN THIS ARTICLE</p>
       {headings.map(h => (
         <a
           key={h.id}
           href={`#${h.id}`}
-          className={`block text-xs font-mono py-1 transition-colors hover:text-[#00ff9d] leading-relaxed
+          className={`block text-xs font-mono py-1 transition-colors hover:text-[var(--accent)] leading-relaxed
             ${h.level === 3 ? 'pl-4' : 'pl-0'}
-            ${activeId === h.id ? 'text-[#00ff9d]' : 'text-[#475569]'}`}
+            ${activeId === h.id ? 'text-[var(--accent)]' : 'text-[var(--muted)]'}`}
         >
-          {h.level === 3 && <span className="text-[#1e293b] mr-1">└</span>}
+          {h.level === 3 && <span className="text-[var(--muted)] mr-1">└</span>}
           {h.text}
         </a>
       ))}
@@ -95,7 +98,7 @@ export async function getStaticProps({ params }) {
     props: {
       note: {
         ...n,
-        note_date: n.note_date.toISOString().split('T')[0],
+        note_date: dateOnly(n.note_date),
         created_at: n.created_at.toISOString(),
         updated_at: n.updated_at.toISOString(),
         refs: n.refs || [],
@@ -116,7 +119,7 @@ export default function NoteDetail({ note, contentHtml, examplesHtml, headings, 
   const s = S(note.category)
 
   const date = new Date(note.note_date).toLocaleDateString('en-US', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
   })
 
   return (
@@ -128,25 +131,12 @@ export default function NoteDetail({ note, contentHtml, examplesHtml, headings, 
 
       <ReadingProgress />
 
-      <div className="min-h-screen bg-[#030712] text-white">
+      <div className="reading-surface min-h-screen bg-[var(--background)] text-white">
 
-        {/* Nav */}
-        <nav className="sticky top-0 z-50 border-b border-[#0f172a] bg-[#030712]/90 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/notes" className="flex items-center gap-2 text-[#475569] text-sm font-mono hover:text-white transition-colors group">
-              <span className="group-hover:-translate-x-0.5 transition-transform">←</span> Notes
-            </Link>
-            <div className="flex items-center gap-2">
-              <span className={`text-xs font-mono px-2.5 py-1 rounded-full border ${s.text} ${s.border} ${s.bg}`}>
-                {note.category}
-              </span>
-              <span className="text-[#334155] text-xs font-mono">{mins} min read</span>
-            </div>
-          </div>
-        </nav>
+        <SiteHeader />
 
         {/* Hero */}
-        <header className="relative border-b border-[#0f172a] overflow-hidden">
+        <header className="relative border-b border-[var(--surface-secondary)] overflow-hidden">
           <div className="absolute inset-0 dot-grid opacity-20" />
           <div className={`absolute top-0 left-0 right-0 h-px opacity-60 ${s.bar}`}
             style={{ background: `linear-gradient(90deg, transparent, currentColor, transparent)` }} />
@@ -157,22 +147,22 @@ export default function NoteDetail({ note, contentHtml, examplesHtml, headings, 
                 <span className={`w-1.5 h-1.5 rounded-full ${s.bar}`} />
                 {note.category}
               </span>
-              <span className="text-[#334155] text-xs font-mono">·</span>
-              <time className="text-[#475569] text-xs font-mono">{date}</time>
-              <span className="text-[#334155] text-xs font-mono">·</span>
-              <span className="text-[#475569] text-xs font-mono">{mins} min read</span>
+              <span className="text-[var(--muted)] text-xs font-mono">·</span>
+              <time className="text-[var(--muted)] text-xs font-mono">{date}</time>
+              <span className="text-[var(--muted)] text-xs font-mono">·</span>
+              <span className="text-[var(--muted)] text-xs font-mono">{mins} min read</span>
             </div>
 
             <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6 tracking-tight">
               {note.title}
             </h1>
 
-            <p className="text-[#64748b] text-lg leading-relaxed max-w-2xl">{note.summary}</p>
+            <p className="text-[var(--secondary)] text-lg leading-relaxed max-w-2xl">{note.summary}</p>
 
             {note.tools_used?.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-6">
                 {note.tools_used.map(t => (
-                  <span key={t} className="bg-[#0a0a16] border border-[#1a1a30] text-[#64748b] text-xs font-mono px-3 py-1 rounded-full">
+                  <span key={t} className="bg-[var(--surface)] border border-[var(--border)] text-[var(--secondary)] text-xs font-mono px-3 py-1 rounded-full">
                     {t}
                   </span>
                 ))}
@@ -182,7 +172,7 @@ export default function NoteDetail({ note, contentHtml, examplesHtml, headings, 
         </header>
 
         {/* Body — 2 col: article + sidebar */}
-        <div className="max-w-7xl mx-auto px-6 py-12">
+        <main id="main-content" tabIndex={-1} className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex gap-12 items-start">
 
             {/* Article */}
@@ -195,8 +185,8 @@ export default function NoteDetail({ note, contentHtml, examplesHtml, headings, 
               {examplesHtml && (
                 <div className="mb-10">
                   <div className="flex items-center gap-3 mb-5">
-                    <span className="text-[#00ff9d] font-mono text-xs tracking-widest">// PRACTICAL EXAMPLES</span>
-                    <div className="flex-1 h-px bg-gradient-to-r from-[#1a1a30] to-transparent" />
+                    <span className="text-[var(--accent)] font-mono text-xs tracking-widest">{'// PRACTICAL EXAMPLES'}</span>
+                    <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
                   </div>
                   <div className="prose-note" dangerouslySetInnerHTML={{ __html: examplesHtml }} />
                 </div>
@@ -205,15 +195,15 @@ export default function NoteDetail({ note, contentHtml, examplesHtml, headings, 
               {note.refs?.length > 0 && (
                 <div className="mb-10">
                   <div className="flex items-center gap-3 mb-5">
-                    <span className="text-[#00ff9d] font-mono text-xs tracking-widest">// REFERENCES</span>
-                    <div className="flex-1 h-px bg-gradient-to-r from-[#1a1a30] to-transparent" />
+                    <span className="text-[var(--accent)] font-mono text-xs tracking-widest">{'// REFERENCES'}</span>
+                    <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
                   </div>
                   <ul className="space-y-2">
                     {note.refs.map((ref, i) => (
                       <li key={i}>
                         <a href={ref.url} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-3 text-[#475569] hover:text-[#00ff9d] transition-colors text-sm font-mono group py-1">
-                          <span className="text-[#00ff9d] group-hover:translate-x-0.5 transition-transform">→</span>
+                          className="flex items-center gap-3 text-[var(--muted)] hover:text-[var(--accent)] transition-colors text-sm font-mono group py-1">
+                          <span className="text-[var(--accent)] group-hover:translate-x-0.5 transition-transform">→</span>
                           <span className="group-hover:underline underline-offset-2">{ref.label || ref.url}</span>
                         </a>
                       </li>
@@ -223,11 +213,11 @@ export default function NoteDetail({ note, contentHtml, examplesHtml, headings, 
               )}
 
               {/* Article footer */}
-              <div className="border-t border-[#0f172a] pt-8 mt-8 flex items-center justify-between">
-                <Link href="/notes" className="flex items-center gap-2 text-[#475569] text-sm font-mono hover:text-[#00ff9d] transition-colors group">
+              <div className="border-t border-[var(--surface-secondary)] pt-8 mt-8 flex items-center justify-between">
+                <Link href="/notes" className="flex items-center gap-2 text-[var(--muted)] text-sm font-mono hover:text-[var(--accent)] transition-colors group">
                   <span className="group-hover:-translate-x-0.5 transition-transform">←</span> All notes
                 </Link>
-                <span className="text-[#1e293b] text-xs font-mono">
+                <span className="text-[var(--muted)] text-xs font-mono">
                   Updated {new Date(note.updated_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </span>
               </div>
@@ -240,7 +230,8 @@ export default function NoteDetail({ note, contentHtml, examplesHtml, headings, 
               </aside>
             )}
           </div>
-        </div>
+        </main>
+        <SiteFooter />
       </div>
     </>
   )

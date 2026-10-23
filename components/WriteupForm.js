@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useId, cloneElement } from 'react'
 
 const CATEGORIES = ['Web', 'Network', 'Malware', 'Forensics', 'CTF', 'Other']
 const IMPACT_LEVELS = ['None', 'Low', 'Medium', 'High', 'Critical']
@@ -44,21 +44,23 @@ async function uploadImage(file) {
 }
 
 function Field({ label, hint, children }) {
+  const id = useId()
+  const control = typeof children?.type === 'string' && ['input', 'select', 'textarea'].includes(children.type)
   return (
     <div className="mb-6">
-      <label className="block text-[#aaa] text-xs font-mono tracking-widest mb-1">{label}</label>
-      {hint && <p className="text-[#666] text-xs mb-2">{hint}</p>}
-      {children}
+      <label id={`${id}-label`} htmlFor={control ? id : undefined} className="block text-[var(--secondary)] text-xs font-mono tracking-widest mb-1">{label}</label>
+      {hint && <p id={`${id}-hint`} className="text-[var(--muted)] text-xs mb-2">{hint}</p>}
+      {control ? cloneElement(children, { id, 'aria-describedby': hint ? `${id}-hint` : undefined }) : <div role="group" aria-labelledby={`${id}-label`}>{children}</div>}
     </div>
   )
 }
 
-const inputCls = 'w-full bg-[#0a0a0a] border border-[#333] rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[#00ff41] transition-colors'
+const inputCls = 'w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent)] transition-colors'
 const selectCls = `${inputCls} cursor-pointer`
 
 function impactColor(level) {
-  const map = { None: '#666', Low: '#3b82f6', Medium: '#f59e0b', High: '#f97316', Critical: '#ef4444' }
-  return map[level] || '#666'
+  const map = { None: 'var(--muted)', Low: '#3b82f6', Medium: '#f59e0b', High: '#f97316', Critical: '#ef4444' }
+  return map[level] || 'var(--muted)'
 }
 
 export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save Writeup' }) {
@@ -187,8 +189,8 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
   return (
     <form onSubmit={handleSubmit}>
       {/* Section 1 — Metadata */}
-      <div className="border border-[#222] bg-[#0d0d0d] rounded-lg p-6 mb-6">
-        <h2 className="text-[#00ff41] font-mono text-xs tracking-widest mb-4">{'// METADATA'}</h2>
+      <div className="border border-[var(--border)] bg-[var(--surface)] rounded-lg p-6 mb-6">
+        <h2 className="text-[var(--accent)] font-mono text-xs tracking-widest mb-4">{'// METADATA'}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
             <Field label="TITLE *">
@@ -246,13 +248,13 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
               placeholder="e.g. OWASP, SQLi, XSS, Privilege Escalation..."
             />
             {tagDropdown && (filteredTags.length > 0 || tagInput.trim()) && (
-              <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-[#111] border border-[#333] rounded shadow-xl max-h-48 overflow-auto">
+              <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-[var(--surface)] border border-[var(--border)] rounded shadow-xl max-h-48 overflow-auto">
                 {filteredTags.map(t => (
                   <button
                     key={t.id}
                     type="button"
                     onClick={() => selectTag(t.name)}
-                    className="w-full text-left px-3 py-2 text-sm hover:bg-[#1a1a1a] flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-[var(--border)] flex items-center gap-2"
                   >
                     <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: t.color }} />
                     <span className="text-white">{t.name}</span>
@@ -262,7 +264,7 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
                   <button
                     type="button"
                     onClick={() => selectTag(tagInput.trim())}
-                    className="w-full text-left px-3 py-2 text-sm text-[#00ff41] hover:bg-[#1a1a1a]"
+                    className="w-full text-left px-3 py-2 text-sm text-[var(--accent)] hover:bg-[var(--border)]"
                   >
                     + Create &ldquo;{tagInput.trim()}&rdquo;
                   </button>
@@ -277,11 +279,11 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
                 return (
                   <span
                     key={tag}
-                    className="flex items-center gap-1 bg-[#1a1a1a] border border-[#333] text-xs font-mono px-3 py-1 rounded-full"
-                    style={{ color: meta?.color || '#00ff41' }}
+                    className="flex items-center gap-1 bg-[var(--border)] border border-[var(--border)] text-xs font-mono px-3 py-1 rounded-full"
+                    style={{ color: meta?.color || 'var(--accent)' }}
                   >
                     {tag}
-                    <button type="button" onClick={() => removeTag(tag)} className="text-[#666] hover:text-red-400 ml-1">×</button>
+                    <button type="button" onClick={() => removeTag(tag)} className="text-[var(--muted)] hover:text-red-400 ml-1">×</button>
                   </span>
                 )
               })}
@@ -294,15 +296,15 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
             type="checkbox"
             checked={form.published}
             onChange={e => set('published', e.target.checked)}
-            className="w-4 h-4 accent-[#00ff41]"
+            className="w-4 h-4 accent-[var(--accent)]"
           />
-          <span className="text-[#aaa] text-sm">Published (visible on public site)</span>
+          <span className="text-[var(--secondary)] text-sm">Published (visible on public site)</span>
         </label>
       </div>
 
       {/* Section 2 — Vulnerability Details */}
-      <div className="border border-[#222] bg-[#0d0d0d] rounded-lg p-6 mb-6">
-        <h2 className="text-[#00ff41] font-mono text-xs tracking-widest mb-4">{'// VULNERABILITY DETAILS'}</h2>
+      <div className="border border-[var(--border)] bg-[var(--surface)] rounded-lg p-6 mb-6">
+        <h2 className="text-[var(--accent)] font-mono text-xs tracking-widest mb-4">{'// VULNERABILITY DETAILS'}</h2>
         <Field label="OVERVIEW *" hint="Brief description of what this vulnerability is">
           <textarea
             rows={4}
@@ -315,7 +317,7 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
         </Field>
 
         <div className="mb-6">
-          <label className="block text-[#aaa] text-xs font-mono tracking-widest mb-3">IMPACT ASSESSMENT</label>
+          <label className="block text-[var(--secondary)] text-xs font-mono tracking-widest mb-3">IMPACT ASSESSMENT</label>
           <div className="grid grid-cols-3 gap-4">
             {[
               ['impact_confidentiality', 'Confidentiality'],
@@ -323,9 +325,9 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
               ['impact_availability', 'Availability'],
             ].map(([field, label]) => (
               <div key={field}>
-                <p className="text-[#666] text-xs mb-1">{label}</p>
+                <p className="text-[var(--muted)] text-xs mb-1">{label}</p>
                 <select
-                  value={form[field]}
+                  aria-label={field.replaceAll('_', ' ')} value={form[field]}
                   onChange={e => set(field, e.target.value)}
                   className={selectCls}
                   style={{ borderColor: form[field] !== 'None' ? impactColor(form[field]) : undefined }}
@@ -365,8 +367,8 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
       </div>
 
       {/* Section 3 — Lab Walkthrough */}
-      <div className="border border-[#222] bg-[#0d0d0d] rounded-lg p-6 mb-6">
-        <h2 className="text-[#00ff41] font-mono text-xs tracking-widest mb-4">{'// LAB WALKTHROUGH'}</h2>
+      <div className="border border-[var(--border)] bg-[var(--surface)] rounded-lg p-6 mb-6">
+        <h2 className="text-[var(--accent)] font-mono text-xs tracking-widest mb-4">{'// LAB WALKTHROUGH'}</h2>
         <Field label="EXPLOITATION WALKTHROUGH *" hint="Step-by-step: what did you do, what happened, what was the result?">
           <textarea
             rows={10}
@@ -399,8 +401,8 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
       </div>
 
       {/* Section 4 — Tools & Evidence */}
-      <div className="border border-[#222] bg-[#0d0d0d] rounded-lg p-6 mb-6">
-        <h2 className="text-[#00ff41] font-mono text-xs tracking-widest mb-4">{'// TOOLS & EVIDENCE'}</h2>
+      <div className="border border-[var(--border)] bg-[var(--surface)] rounded-lg p-6 mb-6">
+        <h2 className="text-[var(--accent)] font-mono text-xs tracking-widest mb-4">{'// TOOLS & EVIDENCE'}</h2>
 
         <Field label="TOOLS USED" hint="Type a tool name and press Enter to add">
           <input
@@ -414,9 +416,9 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
           {form.tools_used.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
               {form.tools_used.map(tool => (
-                <span key={tool} className="flex items-center gap-1 bg-[#1a1a1a] border border-[#333] text-[#ccc] text-xs font-mono px-3 py-1 rounded-full">
+                <span key={tool} className="flex items-center gap-1 bg-[var(--border)] border border-[var(--border)] text-[var(--foreground)] text-xs font-mono px-3 py-1 rounded-full">
                   {tool}
-                  <button type="button" onClick={() => removeTool(tool)} className="text-[#666] hover:text-red-400 ml-1">×</button>
+                  <button type="button" onClick={() => removeTool(tool)} className="text-[var(--muted)] hover:text-red-400 ml-1">×</button>
                 </span>
               ))}
             </div>
@@ -424,16 +426,16 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
         </Field>
 
         <Field label="SCREENSHOTS / EVIDENCE" hint="Upload screenshots — add a description to each one after uploading">
-          <label className="flex items-center gap-3 cursor-pointer border border-dashed border-[#333] rounded px-4 py-3 hover:border-[#00ff41] transition-colors">
-            <span className="text-[#00ff41] text-lg">+</span>
-            <span className="text-[#aaa] text-sm">Choose screenshots to upload</span>
+          <label className="flex items-center gap-3 cursor-pointer border border-dashed border-[var(--border)] rounded px-4 py-3 hover:border-[var(--accent)] transition-colors">
+            <span className="text-[var(--accent)] text-lg">+</span>
+            <span className="text-[var(--secondary)] text-sm">Choose screenshots to upload</span>
             <input type="file" accept="image/*" multiple onChange={handleFiles} className="hidden" />
           </label>
 
           {uploading.length > 0 && (
             <div className="mt-3 space-y-1">
               {uploading.map(u => (
-                <div key={u.id} className="flex items-center gap-2 text-[#888] text-xs font-mono">
+                <div key={u.id} className="flex items-center gap-2 text-[var(--secondary)] text-xs font-mono">
                   <span className="animate-spin inline-block">⟳</span> Uploading {u.name}…
                 </div>
               ))}
@@ -443,7 +445,7 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
           {form.screenshots.length > 0 && (
             <div className="mt-4 space-y-4">
               {form.screenshots.map((shot, idx) => (
-                <div key={idx} className="border border-[#222] rounded-lg overflow-hidden">
+                <div key={idx} className="border border-[var(--border)] rounded-lg overflow-hidden">
                   <div className="relative group">
                     <img src={shot.url} alt={shot.description || `Screenshot ${idx + 1}`} className="w-full max-h-48 object-cover" />
                     <button
@@ -454,12 +456,12 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
                       ×
                     </button>
                   </div>
-                  <div className="p-2 bg-[#111]">
+                  <div className="p-2 bg-[var(--surface)]">
                     <input
                       type="text"
-                      value={shot.description}
+                      aria-label="Screenshot description" value={shot.description}
                       onChange={e => updateScreenshotDesc(idx, e.target.value)}
-                      className="w-full bg-transparent border-0 border-b border-[#333] text-[#aaa] text-xs py-1 focus:outline-none focus:border-[#00ff41] transition-colors"
+                      className="w-full bg-transparent border-0 border-b border-[var(--border)] text-[var(--secondary)] text-xs py-1 focus:outline-none focus:border-[var(--accent)] transition-colors"
                       placeholder={`Description for screenshot ${idx + 1} (optional)`}
                     />
                   </div>
@@ -471,30 +473,30 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
       </div>
 
       {/* Section 5 — References */}
-      <div className="border border-[#222] bg-[#0d0d0d] rounded-lg p-6 mb-6">
-        <h2 className="text-[#00ff41] font-mono text-xs tracking-widest mb-4">{'// REFERENCES'}</h2>
+      <div className="border border-[var(--border)] bg-[var(--surface)] rounded-lg p-6 mb-6">
+        <h2 className="text-[var(--accent)] font-mono text-xs tracking-widest mb-4">{'// REFERENCES'}</h2>
         <div className="space-y-3 mb-4">
           {form.refs.map((ref, i) => (
             <div key={i} className="flex gap-3 items-start">
               <input
                 type="text"
-                value={ref.label}
+                aria-label="Reference label" value={ref.label}
                 onChange={e => updateRef(i, 'label', e.target.value)}
                 className={`${inputCls} flex-shrink-0 w-40`}
                 placeholder="Label (e.g. CVE-2024-XXXX)"
               />
               <input
                 type="url"
-                value={ref.url}
+                aria-label="Reference URL" value={ref.url}
                 onChange={e => updateRef(i, 'url', e.target.value)}
                 className={`${inputCls} flex-1`}
                 placeholder="https://..."
               />
-              <button type="button" onClick={() => removeRef(i)} className="text-[#666] hover:text-red-400 text-lg transition-colors mt-1">×</button>
+              <button type="button" onClick={() => removeRef(i)} className="text-[var(--muted)] hover:text-red-400 text-lg transition-colors mt-1">×</button>
             </div>
           ))}
         </div>
-        <button type="button" onClick={addRef} className="text-[#00ff41] text-sm font-mono hover:underline">
+        <button type="button" onClick={addRef} className="text-[var(--accent)] text-sm font-mono hover:underline">
           + Add Reference
         </button>
       </div>
@@ -508,7 +510,7 @@ export default function WriteupForm({ initialData, onSubmit, submitLabel = 'Save
       <button
         type="submit"
         disabled={submitting || uploading.length > 0}
-        className="w-full bg-[#00ff41] text-black font-bold py-3 rounded text-sm hover:bg-[#00cc33] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-[var(--accent)] text-black font-bold py-3 rounded text-sm hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {submitting ? 'Saving...' : submitLabel}
       </button>

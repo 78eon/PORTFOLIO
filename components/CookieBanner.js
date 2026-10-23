@@ -1,46 +1,62 @@
-import { useState, useEffect } from 'react'
+import { useSyncExternalStore } from 'react'
 import Link from 'next/link'
 
+const subscribe = (callback) => {
+  window.addEventListener('storage', callback)
+  window.addEventListener('neon-consent', callback)
+  return () => {
+    window.removeEventListener('storage', callback)
+    window.removeEventListener('neon-consent', callback)
+  }
+}
+let dismissed = false
+function snapshot() {
+  try {
+    return dismissed || Boolean(localStorage.getItem('cookie_consent'))
+  } catch {
+    return dismissed
+  }
+}
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    if (!localStorage.getItem('cookie_consent')) setVisible(true)
-  }, [])
-
-  function accept() {
-    localStorage.setItem('cookie_consent', 'accepted')
-    setVisible(false)
+  const hidden = useSyncExternalStore(subscribe, snapshot, () => true)
+  function choose(value) {
+    dismissed = true
+    try {
+      localStorage.setItem('cookie_consent', value)
+    } catch {
+      /* Preference still applies for this visit. */
+    }
+    window.dispatchEvent(new Event('neon-consent'))
   }
-
-  function decline() {
-    localStorage.setItem('cookie_consent', 'declined')
-    setVisible(false)
-  }
-
-  if (!visible) return null
-
+  if (hidden) return null
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111] border-t border-[#222] px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between shadow-2xl">
-      <p className="text-[#aaa] text-xs leading-relaxed max-w-xl">
-        This site uses a session cookie for admin authentication and stores your name and email only if you submit the contact form.
-        No tracking or third-party analytics. Read our{' '}
-        <Link href="/privacy" className="text-[#00ff41] hover:underline">Privacy Policy</Link>.
+    <aside
+      aria-label="Cookie preferences"
+      className="cookie-banner fixed bottom-0 left-0 right-0 z-50 bg-[var(--surface)] border-t border-[var(--border)] px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between"
+    >
+      <p className="text-[var(--secondary)] text-xs leading-relaxed max-w-xl">
+        This site uses a session cookie for admin authentication and stores your
+        name and email only if you submit the contact form. No tracking or
+        third-party analytics. Read our{' '}
+        <Link className="text-[var(--accent)] underline" href="/privacy">
+          privacy policy
+        </Link>
+        .
       </p>
-      <div className="flex gap-3 flex-shrink-0">
+      <div className="flex gap-3 shrink-0">
         <button
-          onClick={decline}
-          className="border border-[#333] text-[#666] text-xs font-mono px-4 py-2 rounded hover:border-[#555] hover:text-[#aaa] transition-colors"
+          className="button button-outline"
+          onClick={() => choose('declined')}
         >
           Decline
         </button>
         <button
-          onClick={accept}
-          className="bg-[#00ff41] text-black text-xs font-mono font-bold px-4 py-2 rounded hover:bg-[#00cc33] transition-colors"
+          className="button button-primary"
+          onClick={() => choose('accepted')}
         >
           Accept
         </button>
       </div>
-    </div>
+    </aside>
   )
 }

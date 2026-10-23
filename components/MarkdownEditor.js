@@ -37,7 +37,7 @@ const TOOLS = [
   { label: '—',   title: 'Divider',      fn: el => applyPrefix(el, '---\n') },
 ]
 
-export default function MarkdownEditor({ value, onChange, placeholder, rows = 12 }) {
+export default function MarkdownEditor({ value, onChange, placeholder, rows = 12, id }) {
   const [preview, setPreview] = useState(false)
   const ref = useRef()
 
@@ -53,19 +53,20 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 12
   }
 
   return (
-    <div className="rounded-xl overflow-hidden border border-[#1a1a30] focus-within:border-[#00ff9d]/30 transition-all">
+    <div className="rounded-xl overflow-hidden border border-[var(--border)] focus-within:border-[var(--accent)]/30 transition-all">
       {/* Toolbar */}
-      <div className="flex items-center gap-0.5 px-2 py-2 bg-[#0a0a16] border-b border-[#1a1a30] flex-wrap">
+      <div className="flex items-center gap-0.5 px-2 py-2 bg-[var(--surface)] border-b border-[var(--border)] flex-wrap">
         {TOOLS.map((t, i) =>
           t === null
-            ? <span key={i} className="inline-block w-px h-4 bg-[#1e293b] mx-1.5" />
+            ? <span key={i} className="inline-block w-px h-4 bg-[var(--border)] mx-1.5" />
             : (
               <button
                 key={i}
                 type="button"
                 title={t.title}
+                aria-label={t.title}
                 onClick={() => apply(t)}
-                className={`min-w-[28px] h-7 px-2 rounded text-xs transition-all hover:bg-[#1a1a30] hover:text-white text-[#475569] ${t.cls || ''}`}
+                className={`min-w-[28px] h-7 px-2 rounded text-xs transition-all hover:bg-[var(--border)] hover:text-white text-[var(--muted)] ${t.cls || ''}`}
               >
                 {t.label}
               </button>
@@ -74,11 +75,12 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 12
         <div className="flex-1" />
         <button
           type="button"
+          aria-pressed={preview}
           onClick={() => setPreview(p => !p)}
           className={`text-xs font-mono px-3 py-1.5 rounded border transition-all ${
             preview
-              ? 'bg-[#00ff9d] text-black border-[#00ff9d] font-bold'
-              : 'border-[#1a1a30] text-[#475569] hover:text-white hover:border-[#2a2a50]'
+              ? 'bg-[var(--accent)] text-black border-[var(--accent)] font-bold'
+              : 'border-[var(--border)] text-[var(--muted)] hover:text-white hover:border-[var(--border-strong)]'
           }`}
         >
           {preview ? '✎ Edit' : '👁 Preview'}
@@ -87,26 +89,27 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 12
 
       {preview ? (
         <div
-          className="min-h-[200px] p-5 bg-[#020615] prose-note overflow-auto"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(value) || '<p class="text-[#334155] text-sm font-mono">Nothing to preview yet.</p>' }}
+          className="min-h-[200px] p-5 bg-[var(--background)] prose-note overflow-auto"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(value) || '<p class="text-[var(--muted)] text-sm font-mono">Nothing to preview yet.</p>' }}
         />
       ) : (
         <textarea
+          id={id}
           ref={ref}
           value={value}
           onChange={e => onChange(e.target.value)}
           rows={rows}
           placeholder={placeholder}
-          className="w-full bg-[#020615] px-4 py-3 text-[#e2e8f0] text-sm font-mono focus:outline-none resize-y placeholder-[#1e293b] leading-relaxed"
+          className="w-full bg-[var(--background)] px-4 py-3 text-[var(--foreground)] text-sm font-mono focus:outline-none resize-y placeholder-[var(--muted)] leading-relaxed"
         />
       )}
 
       {/* Status bar */}
-      <div className="flex items-center gap-4 px-3 py-1.5 bg-[#0a0a16] border-t border-[#0f172a]">
-        <span className="text-[#1e293b] text-[10px] font-mono">
+      <div className="flex items-center gap-4 px-3 py-1.5 bg-[var(--surface)] border-t border-[var(--surface-secondary)]">
+        <span className="text-[var(--muted)] text-[10px] font-mono">
           {value.length} chars · {value.trim().split(/\s+/).filter(Boolean).length} words
         </span>
-        <span className="text-[#1e293b] text-[10px] font-mono">Markdown supported</span>
+        <span className="text-[var(--muted)] text-[10px] font-mono">Markdown supported</span>
       </div>
     </div>
   )

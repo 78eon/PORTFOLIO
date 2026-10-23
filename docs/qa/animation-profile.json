@@ -1,0 +1,18 @@
+[
+  {
+    "label": "hero visible",
+    "callbacksIn750ms": 45
+  },
+  {
+    "label": "hero offscreen",
+    "callbacksIn750ms": 0
+  },
+  {
+    "label": "canvas unmounted",
+    "callbacksIn750ms": 0
+  },
+  {
+    "label": "reduced motion",
+    "callbacksIn750ms": 0
+  }
+]

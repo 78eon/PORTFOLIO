@@ -1,3 +1,4 @@
+import { dateOnly } from '@/lib/date'
 import Head from 'next/head'
 import Link from 'next/link'
 import NoteForm from '@/components/NoteForm'
@@ -13,7 +14,7 @@ export async function getServerSideProps({ req, params }) {
     props: {
       note: {
         ...n,
-        note_date: n.note_date.toISOString().split('T')[0],
+        note_date: dateOnly(n.note_date),
         created_at: n.created_at.toISOString(),
         updated_at: n.updated_at.toISOString(),
         refs: n.refs || [],
@@ -29,12 +30,12 @@ export default function EditNote({ note, adminPath }) {
   return (
     <>
       <Head><title>Edit Note — Admin</title></Head>
-      <div className="min-h-screen bg-[#030712] text-white">
-        <header className="border-b border-[#0f172a] px-6 py-4 flex items-center gap-4 bg-[#030712]">
-          <Link href={`/${adminPath}/notes`} className="text-[#475569] font-mono text-sm hover:text-white transition-colors">← Notes</Link>
+      <div className="admin-surface min-h-screen bg-[var(--background)] text-white">
+        <header className="border-b border-[var(--surface-secondary)] px-6 py-4 flex items-center gap-4 bg-[var(--background)]">
+          <Link href={`/${adminPath}/notes`} className="text-[var(--muted)] font-mono text-sm hover:text-white transition-colors">← Notes</Link>
           <h1 className="text-white font-bold text-lg">Edit Note</h1>
         </header>
-        <main className="max-w-4xl mx-auto px-6 py-10">
+        <main id="main-content" tabIndex={-1} className="max-w-4xl mx-auto px-6 py-10">
           <NoteForm initial={note} adminPath={adminPath} />
         </main>
       </div>

@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-23T07:06:04.280791+00:00",
+  "title": "Design System: NEON",
+  "extensions": {
+    "motion": [
+      {
+        "name": "ease-entrance",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Readable entrances."
+      },
+      {
+        "name": "duration-fast",
+        "value": "180ms",
+        "purpose": "Control transitions."
+      },
+      {
+        "name": "duration-enter",
+        "value": "500ms",
+        "purpose": "Shared legacy entrance."
+      },
+      {
+        "name": "archive-entry",
+        "value": "400ms",
+        "purpose": "Research cards."
+      },
+      {
+        "name": "hero-entry",
+        "value": "450\u2013650ms; stagger \u2264160ms",
+        "purpose": "Hero sequence."
+      },
+      {
+        "name": "canvas",
+        "value": "32ms minimum draw interval; DPR \u22641.5; 44/16 nodes",
+        "purpose": "Decorative canvas, static under reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "tablet-max",
+        "value": "1000px"
+      },
+      {
+        "name": "mobile-max",
+        "value": "640px"
+      }
+    ],
+    "shadows": []
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Shared primary action.",
+      "html": "<button class=\"ds-button\">Explore research</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:20px;padding:14px 22px;min-height:48px;font:700 12px Manrope,system-ui,sans-serif;border-radius:8px;border:0;cursor:pointer;transition:background 180ms,color 180ms,transform 180ms}.ds-button:hover{transform:translateY(-2px)}.ds-button:focus-visible{outline:2px solid var(--accent);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:hover{transform:none}}.ds-button{background:var(--accent);color:var(--background)}.ds-button:hover{background:var(--accent-hover)}.ds-button:disabled{opacity:.5;transform:none}"
+    },
+    {
+      "name": "Quiet button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Shared quiet action.",
+      "html": "<button class=\"ds-button\">Explore research</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:20px;padding:14px 22px;min-height:48px;font:700 12px Manrope,system-ui,sans-serif;border-radius:8px;border:0;cursor:pointer;transition:background 180ms,color 180ms,transform 180ms}.ds-button:hover{transform:translateY(-2px)}.ds-button:focus-visible{outline:2px solid var(--accent);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:hover{transform:none}}.ds-button{background:transparent;color:var(--secondary)}.ds-button:hover{background:var(--surface);color:var(--foreground)}"
+    },
+    {
+      "name": "Outline button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Shared outline action.",
+      "html": "<button class=\"ds-button\">Explore research</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:20px;padding:14px 22px;min-height:48px;font:700 12px Manrope,system-ui,sans-serif;border-radius:8px;border:0;cursor:pointer;transition:background 180ms,color 180ms,transform 180ms}.ds-button:hover{transform:translateY(-2px)}.ds-button:focus-visible{outline:2px solid var(--accent);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:hover{transform:none}}.ds-button{background:transparent;color:var(--accent);border:1px solid var(--border)}"
+    },
+    {
+      "name": "Contact field",
+      "kind": "input",
+      "refersTo": "contact-field",
+      "description": "Labeled text field.",
+      "html": "<label class=\"ds-label\" for=\"ds-name\">Name</label><input class=\"ds-field\" id=\"ds-name\" autocomplete=\"name\" placeholder=\"Your name\">",
+      "css": ".ds-label{display:block;font:12px Manrope,system-ui,sans-serif;color:var(--foreground);margin-bottom:10px}.ds-field{background:var(--background);color:var(--foreground);border:1px solid var(--border);border-radius:7px;padding:13px 14px;font:13px Manrope,system-ui,sans-serif}.ds-field::placeholder{color:var(--muted)}.ds-field:focus{border-color:var(--accent);outline:2px solid #a4f4c426;outline-offset:2px}"
+    },
+    {
+      "name": "Research card",
+      "kind": "card",
+      "refersTo": "research-card",
+      "description": "Published research link; content here is a structural preview.",
+      "html": "<a class=\"ds-card\" href=\"#research\"><article><span>Category \u00b7 Date</span><h3>Research title</h3><p>Published research excerpt.</p></article></a>",
+      "css": ".ds-card{display:block;background:var(--surface);color:var(--foreground);border:1px solid var(--border);border-radius:12px;text-decoration:none;transition:transform 200ms ease-out,border-color 200ms}.ds-card article{padding:26px}.ds-card span,.ds-card p{color:var(--secondary);font:13px/1.85 Manrope,system-ui,sans-serif}.ds-card h3{font:600 20px/1.4 Manrope,system-ui,sans-serif;letter-spacing:-.025em}.ds-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}.ds-card:focus-visible{outline:2px solid var(--accent);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-card{transition:none}.ds-card:hover{transform:none}}"
+    },
+    {
+      "name": "Category filter",
+      "kind": "chip",
+      "description": "Pressed state selects an archive category.",
+      "html": "<button class=\"ds-filter\" aria-pressed=\"true\">All research</button>",
+      "css": ".ds-filter{min-height:44px;padding:10px 18px;border-radius:7px;color:var(--secondary);background:transparent;font:12px Manrope,system-ui,sans-serif;border:1px solid transparent}.ds-filter:hover{color:var(--foreground);background:var(--surface)}.ds-filter[aria-pressed=true]{color:var(--accent);background:#a4f4c40d;border-color:#a4f4c433}.ds-filter:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "description": "Mint underline marks hover/current location.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Preview navigation\"><a href=\"#research\" aria-current=\"location\">Research</a><a href=\"#notes\">Notes</a></nav>",
+      "css": ".ds-nav{display:flex;gap:32px}.ds-nav a{color:var(--secondary);font:12px Manrope,system-ui,sans-serif;padding:14px 0;text-decoration:none;border-bottom:1px solid transparent}.ds-nav a:hover,.ds-nav a[aria-current]{color:var(--accent);border-color:var(--accent)}.ds-nav a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Research Notebook After Dark",
+    "overview": "An editorial research notebook after dark: ink-blue surfaces, generous typography, soft mint interaction and a geometric network illustration. Premium restraint keeps real research readable. Homepage mode is Experience; articles are Read; admin, editor and login are Operate.",
+    "keyCharacteristics": [
+      "Editorial hierarchy and generous negative space.",
+      "Ink surfaces, mint actions and restrained cyan illustration detail.",
+      "Evidence before claims; accessible interaction before decoration."
+    ],
+    "rules": [
+      {
+        "name": "The Readable Evidence Rule",
+        "body": "Body and metadata target at least 4.5:1 contrast. Selection reverses ink and mint. Carets and consent checkboxes use mint.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do use database records for research, categories and credentials.",
+      "Do preserve keyboard focus, semantic links, readable text contrast and reduced motion.",
+      "Do keep article text at a comfortable 75ch maximum."
+    ],
+    "donts": [
+      "Don't invent research, accomplishments, availability or monitoring telemetry.",
+      "Don't add animation dependencies or make content wait for JavaScript entrance effects.",
+      "Don't treat decorative borders as a substitute for control focus."
+    ]
+  }
+}

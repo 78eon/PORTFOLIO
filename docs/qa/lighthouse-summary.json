@@ -1,0 +1,42 @@
+{
+  "lighthouseVersion": "13.5.0",
+  "fetchTime": "2026-10-23T07:03:06.563Z",
+  "environment": {
+    "networkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Mobile Safari/537.36",
+    "hostUserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "benchmarkIndex": 1924,
+    "credits": {
+      "axe-core": "4.14.0"
+    }
+  },
+  "formFactor": "mobile",
+  "throttlingMethod": "simulate",
+  "categories": {
+    "performance": 92.0,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
+  },
+  "metrics": {
+    "largest-contentful-paint": {
+      "displayValue": "2.0\u00a0s",
+      "numericValue": 2048.7788
+    },
+    "cumulative-layout-shift": {
+      "displayValue": "0.025",
+      "numericValue": 0.02464511333437693
+    },
+    "total-blocking-time": {
+      "displayValue": "320\u00a0ms",
+      "numericValue": 321.5
+    },
+    "first-contentful-paint": {
+      "displayValue": "0.9\u00a0s",
+      "numericValue": 944.3894
+    },
+    "speed-index": {
+      "displayValue": "2.5\u00a0s",
+      "numericValue": 2531.886371287908
+    }
+  }
+}

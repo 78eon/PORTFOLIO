@@ -12,12 +12,12 @@ export default function NewNote({ adminPath }) {
   return (
     <>
       <Head><title>New Note — Admin</title></Head>
-      <div className="min-h-screen bg-[#030712] text-white">
-        <header className="border-b border-[#0f172a] px-6 py-4 flex items-center gap-4 bg-[#030712]">
-          <Link href={`/${adminPath}/notes`} className="text-[#475569] font-mono text-sm hover:text-white transition-colors">← Notes</Link>
+      <div className="admin-surface min-h-screen bg-[var(--background)] text-white">
+        <header className="border-b border-[var(--surface-secondary)] px-6 py-4 flex items-center gap-4 bg-[var(--background)]">
+          <Link href={`/${adminPath}/notes`} className="text-[var(--muted)] font-mono text-sm hover:text-white transition-colors">← Notes</Link>
           <h1 className="text-white font-bold text-lg">New Note</h1>
         </header>
-        <main className="max-w-4xl mx-auto px-6 py-10">
+        <main id="main-content" tabIndex={-1} className="max-w-4xl mx-auto px-6 py-10">
           <NoteForm adminPath={adminPath} />
         </main>
       </div>

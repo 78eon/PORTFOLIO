@@ -1,3 +1,4 @@
+import { dateOnly } from '@/lib/date'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -15,7 +16,7 @@ export async function getServerSideProps({ req, params }) {
       adminPath: (process.env.ADMIN_PATH || 'admin').trim(),
       writeup: {
         ...w,
-        lab_date: w.lab_date.toISOString().split('T')[0],
+        lab_date: dateOnly(w.lab_date),
         created_at: w.created_at.toISOString(),
         updated_at: w.updated_at.toISOString(),
         refs: w.refs || [],
@@ -49,15 +50,15 @@ export default function EditWriteup({ writeup, adminPath }) {
   return (
     <>
       <Head><title>Edit: {writeup.title} — Admin</title></Head>
-      <div className="min-h-screen bg-[#0a0a0a] text-white">
-        <header className="border-b border-[#222] px-6 py-4">
-          <Link href={`/${adminPath}`} className="text-[#00ff41] font-mono text-sm hover:underline">
+      <div className="admin-surface min-h-screen bg-[var(--background)] text-white">
+        <header className="border-b border-[var(--border)] px-6 py-4">
+          <Link href={`/${adminPath}`} className="text-[var(--accent)] font-mono text-sm hover:underline">
             ← Back to Dashboard
           </Link>
           <h1 className="text-white text-xl font-bold mt-1">Edit Writeup</h1>
-          <p className="text-[#666] text-xs font-mono mt-0.5">{writeup.title}</p>
+          <p className="text-[var(--muted)] text-xs font-mono mt-0.5">{writeup.title}</p>
         </header>
-        <main className="max-w-3xl mx-auto px-6 py-8">
+        <main id="main-content" tabIndex={-1} className="max-w-3xl mx-auto px-6 py-8">
           <WriteupForm initialData={writeup} onSubmit={handleSubmit} submitLabel="Save Changes" />
         </main>
       </div>
