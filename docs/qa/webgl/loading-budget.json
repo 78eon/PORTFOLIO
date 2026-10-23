@@ -1,0 +1,12 @@
+{
+  "sceneChunkFiles": [
+    "27rtgrytxkcv9.js"
+  ],
+  "initialSceneChunkRequested": false,
+  "fontRequests": [
+    {
+      "path": "/fonts/manrope-variable.woff2",
+      "bytes": 53796
+    }
+  ]
+}

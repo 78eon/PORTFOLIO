@@ -1,0 +1,126 @@
+{
+  "checks": [
+    {
+      "name": "published-only archive",
+      "passed": true
+    },
+    {
+      "name": "category filter",
+      "passed": true
+    },
+    {
+      "name": "empty category",
+      "passed": true
+    },
+    {
+      "name": "database certifications remain visible",
+      "passed": true
+    },
+    {
+      "name": "credential verification links remain available",
+      "passed": true
+    },
+    {
+      "name": "upload endpoint rejects anonymous access",
+      "passed": true
+    },
+    {
+      "name": "no horizontal overflow 768",
+      "passed": true
+    },
+    {
+      "name": "no horizontal overflow 390",
+      "passed": true
+    },
+    {
+      "name": "no horizontal overflow 320",
+      "passed": true
+    },
+    {
+      "name": "mobile menu opens",
+      "passed": true
+    },
+    {
+      "name": "mobile menu restores focus",
+      "passed": true
+    },
+    {
+      "name": "reduced motion CSS",
+      "passed": true
+    },
+    {
+      "name": "non-JSON error recovery",
+      "passed": true
+    },
+    {
+      "name": "network error recovery",
+      "passed": true
+    },
+    {
+      "name": "real contact API succeeds",
+      "passed": true
+    },
+    {
+      "name": "route /notes",
+      "passed": true
+    },
+    {
+      "name": "route /notes/qa-protocols",
+      "passed": true
+    },
+    {
+      "name": "route /writeups/qa-request-boundaries",
+      "passed": true
+    },
+    {
+      "name": "route /privacy",
+      "passed": true
+    },
+    {
+      "name": "route /login",
+      "passed": true
+    },
+    {
+      "name": "admin auth redirect",
+      "passed": true
+    },
+    {
+      "name": "login works",
+      "passed": true
+    },
+    {
+      "name": "admin route /qa-admin",
+      "passed": true
+    },
+    {
+      "name": "admin route /qa-admin/notes",
+      "passed": true
+    },
+    {
+      "name": "admin route /qa-admin/certifications",
+      "passed": true
+    },
+    {
+      "name": "admin route /qa-admin/tags",
+      "passed": true
+    },
+    {
+      "name": "admin route /qa-admin/messages",
+      "passed": true
+    },
+    {
+      "name": "admin route /qa-admin/new",
+      "passed": true
+    },
+    {
+      "name": "admin route /qa-admin/notes/new",
+      "passed": true
+    },
+    {
+      "name": "no browser exceptions",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "homeAxeViolations": []
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "axe /privacy",
+    "violations": []
+  },
+  {
+    "name": "axe /qa-admin/certifications",
+    "violations": []
+  },
+  {
+    "name": "axe /qa-admin/tags",
+    "violations": []
+  },
+  {
+    "name": "axe /qa-admin/new",
+    "violations": []
+  },
+  {
+    "name": "axe /qa-admin/notes/new",
+    "violations": []
+  },
+  {
+    "name": "image dialog opens",
+    "passed": true
+  },
+  {
+    "name": "image dialog Escape closes",
+    "passed": true
+  },
+  {
+    "name": "image dialog restores focus",
+    "passed": true
+  },
+  {
+    "name": "skip link keyboard focus",
+    "passed": true
+  },
+  {
+    "name": "skip link reaches main",
+    "passed": true
+  },
+  {
+    "name": "no-JS mobile navigation visible",
+    "passed": true
+  },
+  {
+    "name": "no-JS hero readable",
+    "passed": true
+  }
+]

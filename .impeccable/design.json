@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-23T07:06:04.280791+00:00",
+  "generatedAt": "2026-10-23T09:06:53.155944+00:00",
   "title": "Design System: NEON",
   "extensions": {
     "motion": [
@@ -26,13 +26,28 @@
       },
       {
         "name": "hero-entry",
-        "value": "450\u2013650ms; stagger \u2264160ms",
+        "value": "450–650ms; stagger ≤160ms",
         "purpose": "Hero sequence."
       },
       {
-        "name": "canvas",
-        "value": "32ms minimum draw interval; DPR \u22641.5; 44/16 nodes",
+        "name": "hero-canvas",
+        "value": "32ms minimum draw interval; DPR ≤1.5; 44/16 nodes",
         "purpose": "Decorative canvas, static under reduced motion."
+      },
+      {
+        "name": "explorer-scene",
+        "value": "32ms desktop / 48ms compact minimum draw interval; DPR ≤1.5 / ≤1.25; six nodes; 65 / 30 backdrop points",
+        "purpose": "Optional interactive Three.js scene; explicit ambient pause; hidden/offscreen cancellation; reduced motion renders on demand."
+      },
+      {
+        "name": "explorer-domain-entry",
+        "value": "500ms; translateY(8px) from .65 opacity",
+        "purpose": "Domain description entrance; disabled under reduced motion."
+      },
+      {
+        "name": "explorer-static-fade",
+        "value": "350ms",
+        "purpose": "SVG opacity transition after the optional 3D view is ready; disabled under reduced motion."
       }
     ],
     "breakpoints": [
@@ -43,6 +58,10 @@
       {
         "name": "mobile-max",
         "value": "640px"
+      },
+      {
+        "name": "explorer-intermediate-max",
+        "value": "1150px"
       }
     ],
     "shadows": []
@@ -85,7 +104,7 @@
       "kind": "card",
       "refersTo": "research-card",
       "description": "Published research link; content here is a structural preview.",
-      "html": "<a class=\"ds-card\" href=\"#research\"><article><span>Category \u00b7 Date</span><h3>Research title</h3><p>Published research excerpt.</p></article></a>",
+      "html": "<a class=\"ds-card\" href=\"#research\"><article><span>Category · Date</span><h3>Research title</h3><p>Published research excerpt.</p></article></a>",
       "css": ".ds-card{display:block;background:var(--surface);color:var(--foreground);border:1px solid var(--border);border-radius:12px;text-decoration:none;transition:transform 200ms ease-out,border-color 200ms}.ds-card article{padding:26px}.ds-card span,.ds-card p{color:var(--secondary);font:13px/1.85 Manrope,system-ui,sans-serif}.ds-card h3{font:600 20px/1.4 Manrope,system-ui,sans-serif;letter-spacing:-.025em}.ds-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}.ds-card:focus-visible{outline:2px solid var(--accent);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-card{transition:none}.ds-card:hover{transform:none}}"
     },
     {
@@ -101,11 +120,19 @@
       "description": "Mint underline marks hover/current location.",
       "html": "<nav class=\"ds-nav\" aria-label=\"Preview navigation\"><a href=\"#research\" aria-current=\"location\">Research</a><a href=\"#notes\">Notes</a></nav>",
       "css": ".ds-nav{display:flex;gap:32px}.ds-nav a{color:var(--secondary);font:12px Manrope,system-ui,sans-serif;padding:14px 0;text-decoration:none;border-bottom:1px solid transparent}.ds-nav a:hover,.ds-nav a[aria-current]{color:var(--accent);border-color:var(--accent)}.ds-nav a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+    },
+    {
+      "name": "Cybersecurity domain",
+      "kind": "chip",
+      "refersTo": "cyber-domain",
+      "description": "Educational domain selector; selected state has a mint border and arrow. The preview is structural.",
+      "html": "<button class=\"ds-domain\" aria-pressed=\"true\">Threat Intel<svg width=\"14\" height=\"14\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 10h12m-5-5 5 5-5 5\" stroke=\"currentColor\" stroke-width=\"1.4\"/></svg></button>",
+      "css": ".ds-domain{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:12px;text-align:left;font:12px Manrope,system-ui,sans-serif;color:var(--secondary);background:transparent;border:1px solid transparent;border-radius:8px;transition:background 180ms,color 180ms,border-color 180ms}.ds-domain svg{opacity:0}.ds-domain:hover{color:var(--foreground);background:var(--surface)}.ds-domain[aria-pressed=true]{color:var(--accent);background:#a4f4c40b;border-color:#a4f4c440}.ds-domain[aria-pressed=true] svg{opacity:1}.ds-domain:focus-visible{outline:2px solid var(--accent);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-domain{transition:none}}"
     }
   ],
   "narrative": {
     "northStar": "The Research Notebook After Dark",
-    "overview": "An editorial research notebook after dark: ink-blue surfaces, generous typography, soft mint interaction and a geometric network illustration. Premium restraint keeps real research readable. Homepage mode is Experience; articles are Read; admin, editor and login are Operate.",
+    "overview": "An editorial research notebook after dark: ink-blue surfaces, generous typography, soft mint interaction and a geometric network illustration. An interactive cybersecurity explorer extends this atmosphere with connected educational concepts. Premium restraint keeps real research readable. Homepage mode is Experience; articles are Read; admin, editor and login are Operate.",
     "keyCharacteristics": [
       "Editorial hierarchy and generous negative space.",
       "Ink surfaces, mint actions and restrained cyan illustration detail.",
@@ -121,11 +148,12 @@
     "dos": [
       "Do use database records for research, categories and credentials.",
       "Do preserve keyboard focus, semantic links, readable text contrast and reduced motion.",
-      "Do keep article text at a comfortable 75ch maximum."
+      "Do keep article text at a comfortable 75ch maximum.",
+      "Do preserve the static concept map, HTML selection and camera controls, reduced-motion behavior and explicit illustrative labeling."
     ],
     "donts": [
       "Don't invent research, accomplishments, availability or monitoring telemetry.",
-      "Don't add animation dependencies or make content wait for JavaScript entrance effects.",
+      "Don't make content wait for JavaScript entrance effects or the optional Three.js scene.",
       "Don't treat decorative borders as a substitute for control focus."
     ]
   }

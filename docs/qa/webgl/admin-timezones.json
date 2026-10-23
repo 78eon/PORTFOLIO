@@ -1,0 +1,17 @@
+[
+  {
+    "timezoneId": "UTC",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "timezoneId": "Asia/Jerusalem",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "timezoneId": "America/New_York",
+    "passed": true,
+    "errors": []
+  }
+]

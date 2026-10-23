@@ -52,7 +52,7 @@ export default function Messages({ messages, adminPath }) {
                     </div>
                     <div className="flex items-center gap-3">
                       {!msg.read && <span className="text-[var(--accent)] text-xs font-mono">● new</span>}
-                      <time className="text-[var(--muted)] text-xs font-mono">{new Date(msg.created_at).toLocaleString()}</time>
+                      <time dateTime={msg.created_at} className="text-[var(--muted)] text-xs font-mono">{new Date(msg.created_at).toLocaleString('en-US', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'short' })} UTC</time>
                     </div>
                   </div>
                   <p className="text-[var(--secondary)] text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>

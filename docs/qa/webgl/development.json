@@ -1,0 +1,17 @@
+{
+  "checks": [
+    {
+      "name": "Strict Mode initialization owns exactly one canvas",
+      "passed": true
+    },
+    {
+      "name": "Strict Mode remount owns a fresh working canvas",
+      "passed": true
+    },
+    {
+      "name": "Development has no hydration or runtime exceptions",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

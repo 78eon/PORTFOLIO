@@ -6,6 +6,7 @@ import WriteupCard from '@/components/WriteupCard'
 import SiteHeader from '@/components/layout/SiteHeader'
 import SiteFooter from '@/components/layout/SiteFooter'
 import Hero from '@/components/home/Hero'
+import CyberExplorer from '@/components/cyber/CyberExplorer'
 import ContactForm from '@/components/home/ContactForm'
 import Icon from '@/components/Icon'
 import db from '@/lib/db'
@@ -113,6 +114,7 @@ export default function Home({ writeups, certifications }) {
       <SiteHeader home />
       <main id="main-content" tabIndex={-1}>
         <Hero />
+        <CyberExplorer writeups={writeups} />
         <section
           id="featured"
           className="shell section featured-section"
